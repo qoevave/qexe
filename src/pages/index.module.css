@@ -1,0 +1,188 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+ :root {
+  --banner-color: #70a18b;
+ }
+
+.heroBanner {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+  text-align: left;
+  padding: 0rem 0;
+  position: absolute;
+  overflow: hidden;
+  background-color: var(--banner-color);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 20px 20px 0 rgba(0, 0, 0, 0.19);
+  max-width: 100%;
+  height: 600px;
+  word-wrap: break-word;
+  left: 0;
+  right: 0;
+}
+
+.heroFiller{
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: inherit;
+  padding: 0rem 0;
+  height: 600px;
+  position: sticky;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0);
+  max-width: 100%;
+}
+
+.contentContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  width: 1050px;
+  height: 600px;
+}
+
+.textContainer {
+  width: 40%;
+  padding-left: 10px;
+}
+
+.backgroundImage {
+  background-image: url('/img/qexe_illustration.png');
+  background-size: 650px 400px;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 60%;
+  height: 100%;
+  padding-right: 10px;
+}
+
+.heroTagline{
+  font-size: 35px;
+  word-wrap: break-word;
+  max-width: 100%;
+  letter-spacing: -1.5px;
+  line-height: 1.2;
+  color: #333;
+}
+
+.heroTitle{
+  font-size: 60px;
+  word-wrap: break-word;
+  max-width: 100%;
+  letter-spacing: -1.5px;
+  line-height: 1.2;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.buttons {
+  display: flex;
+  padding-top: 20px;
+  justify-content: left;
+}
+
+.buttonRounder{
+  border-radius: 20px;
+}
+
+/* Styling one class specially in dark mode */
+[data-theme='dark'] .heroTitle {
+  color: #f1f1f1;
+}
+
+/* Styling one class specially in dark mode */
+[data-theme='dark'] .heroTagline {
+  color: #f8f8f8;
+}
+
+/* Styling one class specially in dark mode */
+[data-theme='dark'] .heroBanner {
+  background-color: #303846;
+}
+
+
+@media screen and (max-width: 966px) {
+.heroTitle{
+  font-size: 30px;
+  padding-left: 10px;
+}
+
+.heroTagline{
+  font-size: 18px;
+  padding-left: 10px;
+}
+
+.heroFiller{
+  height: 420px;
+}
+
+.heroBanner{
+  height: 420px;
+}
+
+.backgroundImage{
+  background-size: 80% auto;
+}
+.textContainer {
+  width: 40%;
+  padding-left: 50px;
+}
+
+}
+
+@media screen and (max-width: 450px) {
+  .heroTitle{
+    font-size: 50px;
+    padding-top: 30px;
+    text-align: center;
+  }
+  
+  .heroTagline{
+    font-size: 18px;
+    text-align: center;
+  }
+  
+  .heroFiller{
+    height: 420px;
+  }
+  
+  .heroBanner{
+    height: 420px;
+  }
+  
+  .backgroundImage{
+    background-size: 100% auto;
+    padding-right: 0;
+    width: 80%;
+
+  }
+
+  .contentContainer{
+    flex-direction: column;
+  }
+
+  .buttons {
+    justify-content: center;
+  }
+
+  .textContainer{
+    width: 90%;
+    padding-left: 0px;
+  }
+}
+

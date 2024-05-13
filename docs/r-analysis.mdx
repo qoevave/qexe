@@ -1,0 +1,49 @@
+---
+sidebar_position: 6
+custom_edit_url: null 
+---
+
+# Analysis
+
+## (R)eady to go... 
+
+To analyze the data ouput of the QExE tool, we've provided a few R scritps to get you going. 
+
+```R
+# read the raw tracking per subject file .txt and save into a dataframe. 
+read_behavior_file <- function(df_main_behavior, resultsPath, subjectFolder) {
+  
+  #pathToFolders <- "../RESULTS/Training_Yes/"
+  #folders <- list.files(path = pathToFolders)
+  #subjectFolder <- folders[1]
+  
+  subjectFilesInFolder <- list.files(path = paste(pathToFolders, subjectFolder, sep=""))
+  
+  # Set behavior file path name.
+  behaviourFilePath <- paste(pathToFolders, subjectFolder, "/", subjectFilesInFolder[1], sep = "")
+  
+  # Remove .txt suffix from SubjectID to use as a subject entry in long format data frame. 
+  # subjectID <- gsub(".txt","",behaviourFilePath)
+  
+  print(paste("Start reading behavior.txt ...", behaviourFilePath))
+  
+  df_this_subject_behavior = read.table(behaviourFilePath, header = FALSE, sep = " ", dec = ".", fill = TRUE, col.names = paste('V',seq_len(23)))
+  df_this_subject_behavior <- dplyr::select(df_this_subject_behavior, V.1, V.3, V.5, V.7, V.8, V.9, V.10, V.11, V.12, V.13, V.14, V.15, V.16, V.17,V.18,V.19,V.20,V.21)
+  
+  df_this_subject_behavior$SubjID <- c(gsub(".txt","",subjectFilesInFolder[9]))
+  
+  # find the unique items to analyse the behavior.
+  unique_items_list <- unique(df_this_subject_behavior$V.3)
+  print(unique_items_list)
+
+  # for (i in 1:length(unique_items_list))
+  #   if (unique_items_list[i] != "null"){
+  #     subject_tracking_item_trimmed_df <- trim_tracking_file(subject_tracking_item_trimmed_df, df_main_behavior, unique_items_list[i])
+  #   }
+  
+  df_main_behavior <- rbind(df_main_behavior, df_this_subject_behavior)
+  return(df_main_behavior)
+}
+```
+
+

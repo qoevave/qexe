@@ -1,0 +1,79 @@
+---
+sidebar_position: 3
+custom_edit_url: null 
+---
+
+import TextImage from '../../src/components/textImageLeft';
+import SSQ_interface from '/img/method_interfaces/SSQ_interface.png';
+import NASA_TLX_interface from '/img/method_interfaces/NASA-TLX_interface.png';
+
+# Questionnaires
+
+## Overview
+
+To gain more insight into other factors besides the main quality evaluation criteria, questionnaires can be employed to explore additional effects pertaining to more attitundal or cognitive aspects. This is an optional extra that can be included on top of the mandatory test [method](./methods).
+
+The QExE tool comes with two questionnaires that have been previously employed during the development of the tool and lab research. 
+
+- NASA Task Load Index (NASA-TLX)
+- Simulator Sickness Questionnaire (SSQ)
+
+:::tip Future Support
+
+More questionnaires will be added in future updates. In you interested in contributing, please see our [call for contribution statement](../intro).
+
+:::
+
+Three options are provided in the [configuration file](../getting-started/config-file) to integrate the questionnaire into your test design, `Active`, `Type`, and `Integration`. 
+
+- `Active` entries are `1` or `0`, setting the questionnaire on/off respectively._createMdxContent
+- `Type` entries are the name of the desired questionnaire.
+- `Integration` entries are either `Lace` or `End`. 
+    - The `Lace` entry will insert the specified questionnaire between each presented item, allowing for item-dependent responses for more detailed analysis at the cost of a higher task burden for subjects. 
+    - The `End` entry will append all the test items with the specified questionnaire allowing for a more manageable test, with questionnaire data representing the holistic evaluation experience.
+
+## Questionnaires
+
+### NASA-TLX
+
+<TextImage
+    description={{
+        title: "NASA Task Load Index",
+        content: (
+        <p>
+        The NASA-Task Load Index Questionnaire is used to evalulate the amount of load a task demands of the user. Each of the dimensions have a 21-point scale from Low to High, or for "Performance", perfect to failure.
+        <br />
+        <br />
+        Each dimension is defined below:
+        </p>
+        ),
+    }}
+    imagePath={NASA_TLX_interface}
+    /> 
+
+
+
+| Demension | Description |
+| - | - |
+| Mental Demand | How much mental and perceptual activity was required (e.g., thinking, deciding, calculating, remembering, etc.)? |
+| Physical Demand | How much physical activity was required (e.g., pushing, pullingm turning, controlling, activating, etc.)? |
+| Temporal Demand | How much time pressure did you feel due to the rate or pace at which the tasks or task elements occured? |
+| Performance | How successful do you think you were in accomplishing the goals of the tasks set by the experiments? |
+| Effort | How hard did you have to work (mentally and physically) to accomplish your level of performance? | 
+| Frustration Level | How insecure, discourages, irritated, stressed, and annoyed vs. secure, gratified, content, and relaxed did you feel during the task? |
+
+### SSQ
+
+<TextImage
+    description={{
+        title: "Similator Sickness Questionnire",
+        content: (
+        <p>
+        The simulator sickness questionnaire has been adopted in many research experiments to quantify the effects of virtual reality systems on user sickness. The 16 sub-dimesions within the questionnaire contiribute to three main categories: nausea, oculormotor disturbance, and disorientation.
+        </p>
+        ),
+    }}
+    imagePath={SSQ_interface}
+    />
+
+

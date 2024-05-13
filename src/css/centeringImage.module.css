@@ -1,0 +1,17 @@
+/* CSS for TwoColumnComponent using CSS Grid */
+.centerImg{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+    
+.img{
+  width: 100%;
+  justify-content: center;
+}
+
+  
+  
+  
+  
+  

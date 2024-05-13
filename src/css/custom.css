@@ -1,0 +1,113 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #a17086;
+  --ifm-color-primary-dark: #946178;
+  --ifm-color-primary-darker: #8c5c72;
+  --ifm-color-primary-darkest: #734c5e;
+  --ifm-color-primary-light: #ac8094;
+  --ifm-color-primary-lighter: #b1899b;
+  --ifm-color-primary-lightest: #c1a1b0;
+  --ifm-background-color: #ffffff;
+  --ifm-tabs-color: #262d30;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #a17086;
+  --ifm-color-primary-dark: #946178;
+  --ifm-color-primary-darker: #8c5c72;
+  --ifm-color-primary-darkest: #734c5e;
+  --ifm-color-primary-light: #ac8094;
+  --ifm-color-primary-lighter: #b1899b;
+  --ifm-color-primary-lightest: #c1a1b0;
+}
+
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.445);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+article {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+
+:root {
+  --ifm-font-family-base: 'Poppins';
+  --doc-sidebar-width: 250px;
+  --ifm-font-size-base: 14px;
+}
+
+.unique-tabs .tabs__item {
+  line-height: 16px;
+  margin-right: 8px;
+}
+
+.tabs__item {
+  border-bottom: 3px solid transparent;
+  border-radius: var(--ifm-global-radius);
+  cursor: pointer;
+  display: inline-flex;
+  padding: var(--ifm-tabs-padding-vertical) var(--ifm-tabs-padding-horizontal);
+  transition: background-color var(--ifm-transition-fast) var(--ifm-transition-timing-default);
+}
+
+.tabs__item[aria-selected='true'] {
+  background-color: rgb(159, 184, 195);
+  color: white;
+}
+
+.theme-doc-sidebar-container{
+  --doc-sidebar-width: 250px;
+}
+
+.main-wrapper{
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.navbar__inner{
+  margin-right:15%;
+  margin-left: 10%;
+}
+
+.navbar{
+  /*background-color: #303846;*/
+  background-color: #946178;
+}
+
+.footer{
+  /*background-color: #303846;*/
+  background-color: #946178;
+}
+
+[data-theme='dark'] .navbar {
+  /*background-color: #1B1B1D;*/
+  background-color: #A17086
+}
+
+.navbar__title{
+  color: white;
+}
+
+:root {
+  --docusaurus-highlighted-code-line-bg: rgb(230, 230, 230);
+}
+
+/* Styling one class specially in dark mode */
+[data-theme='dark'] {
+  --docusaurus-highlighted-code-line-bg: rgb(84, 85, 89);
+}

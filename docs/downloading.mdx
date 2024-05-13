@@ -1,0 +1,72 @@
+---
+sidebar_position: 6
+custom_edit_url: null 
+---
+
+# Download
+
+## Requirements
+
+The QExE tool has been designed for Windows PC using the following software:
+- MaxMSP 8(free-runtime version only needed) Windows 64-bit 
+    - [https://cycling74.com/downloads](https://cycling74.com/downloads)
+- Unity 2021.3 LTS
+    - [LTS download archive](https://unity.com/releases/editor/qa/lts-releases?major_version=&version=&minor_version=&page=1)
+
+
+For Third Party Notices for additional SDKs and packages, please see the License page.
+
+## Project Structure
+
+Installing the MaxMSP Controller and Unity Agent on the same machine, an example project structure is the following:
+
+```
+my-qexe-project
+├── MaxController
+│   ├── src
+│   ├── localtmp
+│   └── testfiles
+├── UnityAgent
+│   ├── Assets
+│   ├── ...
+├── myLocalTestContentFolder
+│   ├── scene_1_objectAudioFolder
+│   │   └── monoAudioFile_1.wav
+│   │   └── monoAudioFile_2.wav
+│   └── scene_2_AmbisonicsAudioAndVideoFolder
+│       ├── multichannelAudioFile.wav
+│       └── videoFile.mp4
+└── myLocalTestVSTs
+    ├── plugin_1.dll
+    ├── plugin_1_mappingfile.js
+    └── myHRTF.sofa
+```
+
+## MaxMSP
+
+### Download
+
+```bash
+git clone https://
+```
+
+### One-time setup
+
+Once MaxMSP has been installed on your machine, a one-time operation needs to be done to add the correct file path to Max's search directory.
+1. Open MaxMSP
+2. Navigate to `Options > File Preferences`
+3. Add a new file path
+4. Browse to the directory of the MaxController
+5. Close Max. The next time you open MaxMSP, it will search this directory.
+
+## Unity
+
+### Download 
+
+```bash
+git clone https://
+```
+
+Once downloaded, the Unity Agent project can either be open directly or via the Unity hub. 
+
+

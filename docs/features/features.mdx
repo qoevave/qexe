@@ -1,0 +1,52 @@
+---
+sidebar_position: 2
+custom_edit_url: null 
+---
+
+# Feature Tiers
+
+## Application Tier
+
+:::tip What does the application do?...
+
+:::
+
+- Automatic calculation of test items based on specified configuration file scene stimuli, method, and conditions.
+- Includes 5 evaluation [methods](./methods) (MUSHRA, MS, ACR, EBA, and PC), and 2 [questionnaires](./questionnaires) (SSQ, NASA-TLX).
+- Random of fixed item ordering.
+- Mono or multichannel audio files to support either object-based or Ambisonic rendering pipelines.
+- Can be used with 360 degree video or CGI visual content.
+- Integrate custom questionnaires.
+- Include VSTs capable of 3-DoF or 6-DoF audio rendering.
+- Integrate custom methods.
+- Tracks user pose and user interface interactions by default, but can be extended to track or flag anything you like in Unity
+
+## Presentation Tier
+
+:::tip How do you interact and interface with the application?...
+
+:::
+
+![qexe_guis](/img/qexe_perspective.png)
+
+- QExE Host (MaxMSP) with simple disign for overview of test, test progression, real-time user position data monitoring, and method and questionnaire modules overview.
+- Easily open the loaded audio rendering VST and channel-object routing options.
+- Virtual reality user interfaces for all methods and questionnaires with virtual laser pointed which can be toggled on/off.
+- Compatible with VR hardware using OpenXR or Oculus SDKs.
+- Custom Unity console messaging for easier debugging.
+- Custom Unity widgets for easier in-scene identification.
+- Custom color schemes can be applied to VR user interfaces.
+- Custom VR user interfaces can be made using UI components.
+
+## Data Tier
+
+:::tip What are the data formats and data management features?...
+
+:::
+
+- Test setup is managed via a single `JSON` file, [the config File](../getting-started/config-file.mdx).
+- [Communication](../qexe-architecture/communication) between host and client is done via UDP using `OSC` messaging protocol.
+- Results from method and questionnaire saved as `JSON` file structure. 
+- Real-time behavioral and object data saved into a `.txt` file. Includes any data the is sent to the UDP port.
+- Subject ID is automatically appended to results folder, including date and time for easy data management.
+- Provided sample R scripts for analysis for QExE output.

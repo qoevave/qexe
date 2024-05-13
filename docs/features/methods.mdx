@@ -1,0 +1,127 @@
+---
+sidebar_position: 2
+custom_edit_url: null 
+---
+
+import TextImage from '../../src/components/textImageLeft';
+import MUSHRA_interface from '/img/method_interfaces/MUSHRA_interface.png';
+import MS_interface from '/img/method_interfaces/MS_interface.png';
+import EBA_interface from '/img/method_interfaces/RankOrder_interface.png'
+import PC_interface from '/img/method_interfaces/PairwiseComparison_interface.png';
+import ACR_interface from '/img/method_interfaces/ACR_interface.png';
+
+# Test Methods
+
+## Overview
+
+The QExE tool currently features five quality evaluation methods. To operate a test using the QExE tool, the `TestMethod` entry in the [configuration file](../getting-started/config-file) is a mandatory setting.
+
+Four of these methods are traditionally used in **audio quality** evaluation settings, and is indicated using the [`Modality : A`](../getting-started/config-file) flag. The remaining method can be used for **audio, visual, or audiovisual quality** evaluation and is indicated via the [`Modality : A, V, or AV`](../getting-started/config-file) flag.
+
+- Multiple stimulus with hidden reference and anchor (MUSHRA) 
+    ```JSON
+    "TestMethod" : "MUSHRA",
+    "Modality" : "A",
+    ```
+- Multiple stimulus comparison (MS) 
+    ```JSON
+    "TestMethod" : "MS",
+    "Modality" : "A",
+    ```
+- Elimination-by-aspects (EBA) 
+    ```JSON
+    "TestMethod" : "EBA",
+    "Modality" : "A",
+    ```
+- Pairwise comparison (PC) 
+    ```JSON
+    "TestMethod" : "PC",
+    "Modality" : "A",
+    ```
+- Absolute catergory rating (ACR) 
+    ```JSON
+    "TestMethod" : "ACR",
+    "Modality" : "A" / "V" / "AV",
+    ```
+
+As some of these names imply, the four audio quality evaluation methods employ multiple audio conditions in parallel, these being MUSHRA, MS, EBA, and PC. I.e., subjects are provided with two more buttons displayed as `A`, `B`, and so on. These represent the conditions subjects are intended to evaluate, and by clicking the condition buttons, the audio rendering will change depending on the condition employed for `A` or `B`.
+
+The remaining method ACR is sometimes referred to as a "single stimulus" method, as only one condition is presented to the subject at a time. As there is no need to real-time switching between conditions, this method is commonly employed in visual quality evaluation studies, and thus provides a practical means for evaluation visual quality in virtual reality.
+
+## Method → Item Calculation
+
+The choice of which method you choose for your study, will impact the number of [evaluation items](../downloading.mdx) are presented to the subject. 
+
+For example, a test employing ACR will present as many evaluation items, as there are stimuli x conditions. As ACR presents items individually, every combination will presented sequentially. In contrast, the MS method will present all conditions in parallel, per stimuli. So for each stimuli (i.e., VR scene) all three different conditions will be presented at the same time for the subject to switch between and evaluate at their discretion. 
+
+## Methods
+
+### MUSHRA
+
+<TextImage
+    description={{
+        title: "Multiple Stimulus with Hidden Reference and Anchor",
+        content: (
+        <p>
+        The interface features a continuous scale from 0 - 100, with verbal labels 'Bad, Poor, Fair, Good, and Excellent'. The REF button will switch to the open referece. Conditions A, B, C ... etc., will switch between conditions. Users should set the slider to indicate the magnitude of a perceieved sentation (e.g., quality). 
+        </p>
+        ),
+    }}
+    imagePath={MUSHRA_interface}
+    />
+
+### MS
+
+<TextImage
+    description={{
+        title: "Multiple Stimulus",
+        content: (
+        <p>
+        The interface features a continuous scale from 0 - 100, with verbal labels 'Bad, Poor, Fair, Good, and Excellent'. No reference button is present making all ratings relative to one another. As with MUSHRA, conditions can be selected with buttons A, B, C, etc.
+        </p>
+        ),
+    }}
+    imagePath={MS_interface}
+    />
+
+### EBA
+
+<TextImage
+    description={{
+        title: "Elimination-by-Aspects",
+        content: (
+        <p>
+        Sometimes referred to as rank-order or round-robin, the method features buttons to select a condition to play (A, B, C, etc.) along with buttons to eliminate the respective condition. 
+        </p>
+        ),
+    }}
+    imagePath={EBA_interface}
+    />
+
+### PC
+
+<TextImage
+    description={{
+        title: "Pairwise Comparison",
+        content: (
+        <p>
+        The pariwise comparison method typically features a pair of conditions A and B. The method is often refered to as AB-testing. In this interface, the additional slider allows for a magnitude of the perferred choice to be expressed. Subject will then itterate through all condition pairs before moving onto the next text item.
+        </p>
+        ),
+    }}
+    imagePath={PC_interface}
+    />
+
+### ACR
+
+<TextImage
+    description={{
+        title: "Absolute Category Rating",
+        content: (
+        <p>
+        Sometimes refered to as a single-stimlus method, the ACR method present only a single condition at a time. This means that all conditions are technically judged in isolation. In practice, factors such as acoustic or visual memory, leading-stimlus bias, and exposre bias will factor into subjects' perception. The rating applied is given along a 11-point absolute caegatory rating scale. 
+        </p>
+        ),
+    }}
+    imagePath={ACR_interface}
+    />

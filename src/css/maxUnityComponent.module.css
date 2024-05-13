@@ -1,0 +1,30 @@
+/* CSS for TwoColumnComponent using CSS Grid */
+.saliencysection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    flex-direction: column;
+    width: 100%;
+  }
+    
+.maxUnityImg{
+  width: 100%;
+  max-width: 1000px;
+  justify-content: center;
+}
+
+/* Styling one class specially in dark mode */
+[data-theme='dark'] .title {
+  color: #f1f1f1;
+}
+
+/* Styling one class specially in dark mode */
+[data-theme='dark'] .description {
+  color: #f8f8f8;
+}
+  
+  
+  
+  
+  

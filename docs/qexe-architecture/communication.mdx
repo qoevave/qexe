@@ -1,0 +1,102 @@
+---
+sidebar_position: 4
+custom_edit_url: null 
+---
+
+# OSC Communication
+
+## Sequence Diagram
+
+Sequence diagram of OSC messages for automating the test. 
+
+:::tip Information
+
+The following diagram is an overview of OSC messages between Max and Unity. For a sequence diagram of how to set up a test, see the [example test](../example-test.mdx) page.
+
+:::
+
+```mermaid
+sequenceDiagram
+    actor Jeff the Admin
+    Jeff the Admin->>Unity Agent: 'Play' Unity _config scene
+    Unity Agent -->> Unity Agent: Start runtime
+    Unity Agent-->>Max Controller: agent_is_active = 1 
+    Max Controller -->> Max Controller: is JSON loaded?
+    alt JSON.loaded = 0
+    else JSON.loaded = 1
+        Unity Agent -->> Max Controller: get_paradigm_information()
+        Max Controller -->> Unity Agent: set_paradigm_information()
+        Note left of Max Controller: method, numberOfConditions, <br/> questionnaire, questionnaireIntegration
+        Unity Agent -->> Max Controller: get_next_item()
+        loop Main Test Loop
+            Max Controller -->> Unity Agent: give_unity_scene_item()
+            activate Unity Agent
+            Note left of Max Controller: _unityScene_ID
+            alt 360VideoScene
+                Max Controller -->> Unity Agent: give_unity_video_info()
+                Note left of Max Controller: nextVideoFile, nextVideo_ID
+            end
+            Note over Unity Agent: Subject performs <br> test in CGI or 360 video scene
+            Unity Agent -->> Max Controller: set_next_item()
+            deactivate Unity Agent
+            Unity Agent -->> Unity Agent: Load next scene
+            alt current scene == _config
+                Max Controller -->> Unity Agent: give_subjects_results_directory()
+                Note left of Max Controller: ./path/to/results/Subjects_ID/
+            end
+            Max Controller -->> Max Controller: Increment item
+            Unity Agent -->> Max Controller: get_next_item()
+        end
+        Max Controller -->> Max Controller: Test finished 
+        Max Controller -->> Unity Agent: give_unity_scene_item()
+        Note left of Max Controller: _config
+    end
+    Jeff the Admin ->> Unity Agent: 'Stop' Unity 
+    Unity Agent-->>Max Controller: agent_is_active = 0
+    Unity Agent -->> Unity Agent: Stop runtime
+```
+
+
+## OSC Message List
+
+:::info FYI
+
+Argument in speech marks \" \" indicate a constant. These string messages are used to trigger functions in the receiving programs. 
+
+:::
+
+### Max → Unity
+
+<span style={{ fontSize: '0.8em'}}>
+
+|Address |  Arguments | Type | Description |
+| --- | - | - | - |
+| /client/item/ | "set_scene_item", <br/> unityScene_ID | String, <br/> String | Variable for OSC message swtich in Unity, <br/> Name of Unity scene for method | 
+| /client/item/ | "set_video_item", <br/> videoFile, <br/> videoID  | String, <br/> String, <br/> Int| Variable for OSC message swtich case in Unity, <br/> URL to video file, <br/> ID number of video file | 
+| /client/results/ | subjectsPath | String | URL to this subjects result directory | 
+| /client/configuration/ | "set_paradigm_information", <br/> method, <br/> numberOfConditions, <br/> questionnaire, <br/> questionnaireIntegration | String, <br/> String, <br/> Int, <br/> String, <br/> String | Variable for OSC message swtich in Unity, <br/> Name of the method, <br/> Number of parallel conditions, <br/> Name of questionnaire, <br/> How the questionnaire should be integrated | 
+| /client/configuration/ | "json_loaded", <br/> jsonLoaded | String, <br/> Int | Variable for OSC message swtich in Unity, <br/> Value to tell Unity is a JSON file is loaded in Max | 
+
+</span>
+
+### Unity → Max
+
+<span style={{ fontSize: '0.8em' }}>
+
+|Address |  Arguments | Type | Description |
+| --- | - | - | - |
+| /control/ | "get_next_item" | String | Calls function to ask the TestManager for the next unityScene_ID | 
+| /control/ | "set_next_item" | String | Calls function to load and set the next item |
+| /control/ | "client_is_active", <br/> clientState| String, <br/> Int | Calls prompt to indicate client status, <br/> Tells Max that Unity is running or stopped | 
+| /control/ | "get_paradigm_information" | String | Calls function to send back the paradigm variables | 
+| /stream/objectspose/ | objectIndex, <br/> objectPosition | Int, <br/> Vector3 | Index to identify which audio source should be updated, <br/> [X, Y, Z] position in Unity coordinates | 
+| /stream/objectstrigger/ | objectIndex, <br/> triggerMessage | Int, <br/> String | Index to identify which audio source should be updated, <br/> "Play" or "Stop" message to control event audio playback |
+| /stream/userpose/pos/ | userPositionPos | Vector3 | [X, Y, Z] position in Unity coordinates | 
+| /stream/userpose/rot/ | userPositionRot | Vector3 | [X, Y, Z] (Yaw, Pitch, Roll) rotation in Euler angles | 
+| /stream/userpose/teleport | userTeleportFlag | Int | Transition from 0 to 1 indicate successful teleportaion | 
+| /stream/controllerpose/left/ | controllerPos, <br/> controllerRot | Vector3, <br/> Vector3 | [X, Y, Z] position in Unity coordinates, <br/> [X, Y, Z] (Yaw, Pitch, Roll) rotation in Euler angles | 
+| /stream/controllerpose/right/ | controllerPos, <br/> controllerRot | Vector3, <br/> Vector3 | [X, Y, Z] position in Unity coordinates, <br/> [X, Y, Z] (Yaw, Pitch, Roll) rotation in Euler angles | 
+| /audioplayback/ | audioPlayback | String | "Play" or "Stop" message to control continuous audio playback | 
+
+
+</span>
