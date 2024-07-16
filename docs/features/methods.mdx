@@ -14,34 +14,34 @@ import ACR_interface from '/img/method_interfaces/ACR_interface.png';
 
 ## Overview
 
-The QExE tool currently features five quality evaluation methods. To operate a test using the QExE tool, the `TestMethod` entry in the [configuration file](../getting-started/config-file) is a mandatory setting.
+The QExE tool currently features five quality evaluation methods. To operate a test using the QExE tool, the `methodType` entry in the [configuration file](../getting-started/config-file) is a mandatory setting.
 
-Four of these methods are traditionally used in **audio quality** evaluation settings, and is indicated using the [`Modality : A`](../getting-started/config-file) flag. The remaining method can be used for **audio, visual, or audiovisual quality** evaluation and is indicated via the [`Modality : A, V, or AV`](../getting-started/config-file) flag.
+Four of these methods are traditionally used in **audio quality** evaluation settings, and is indicated using the [`modalityRatio : A`](../getting-started/config-file) flag. The remaining method can be used for **audio, visual, or audiovisual quality** evaluation and is indicated via the [`modalityRatio : A, V, or AV`](../getting-started/config-file) flag.
 
 - Multiple stimulus with hidden reference and anchor (MUSHRA) 
     ```JSON
-    "TestMethod" : "MUSHRA",
-    "Modality" : "A",
+    "methodType" : "MUSHRA",
+    "modalityRatio" : "A",
     ```
 - Multiple stimulus comparison (MS) 
     ```JSON
-    "TestMethod" : "MS",
-    "Modality" : "A",
+    "methodType" : "MS",
+    "modalityRatio" : "A",
     ```
 - Elimination-by-aspects (EBA) 
     ```JSON
-    "TestMethod" : "EBA",
-    "Modality" : "A",
+    "methodType" : "EBA",
+    "modalityRatio" : "A",
     ```
 - Pairwise comparison (PC) 
     ```JSON
-    "TestMethod" : "PC",
-    "Modality" : "A",
+    "methodType" : "PC",
+    "modalityRatio" : "A",
     ```
 - Absolute catergory rating (ACR) 
     ```JSON
-    "TestMethod" : "ACR",
-    "Modality" : "A" / "V" / "AV",
+    "methodType" : "ACR",
+    "modalityRatio" : "A" / "V" / "AV",
     ```
 
 As some of these names imply, the four audio quality evaluation methods employ multiple audio conditions in parallel, these being MUSHRA, MS, EBA, and PC. I.e., subjects are provided with two more buttons displayed as `A`, `B`, and so on. These represent the conditions subjects are intended to evaluate, and by clicking the condition buttons, the audio rendering will change depending on the condition employed for `A` or `B`.
@@ -54,9 +54,9 @@ The choice of which method you choose for your study, will impact the number of 
 
 For example, a test employing ACR will present as many evaluation items, as there are stimuli x conditions. As ACR presents items individually, every combination will presented sequentially. In contrast, the MS method will present all conditions in parallel, per stimuli. So for each stimuli (i.e., VR scene) all three different conditions will be presented at the same time for the subject to switch between and evaluate at their discretion. 
 
-## Methods
+## `methodType :`
 
-### MUSHRA
+### `MUSHRA`
 
 <TextImage
     description={{
@@ -70,7 +70,7 @@ For example, a test employing ACR will present as many evaluation items, as ther
     imagePath={MUSHRA_interface}
     />
 
-### MS
+### `MS`
 
 <TextImage
     description={{
@@ -84,7 +84,7 @@ For example, a test employing ACR will present as many evaluation items, as ther
     imagePath={MS_interface}
     />
 
-### EBA
+### `EBA`
 
 <TextImage
     description={{
@@ -98,7 +98,7 @@ For example, a test employing ACR will present as many evaluation items, as ther
     imagePath={EBA_interface}
     />
 
-### PC
+### `PC`
 
 <TextImage
     description={{
@@ -112,7 +112,7 @@ For example, a test employing ACR will present as many evaluation items, as ther
     imagePath={PC_interface}
     />
 
-### ACR
+### `ACR`
 
 <TextImage
     description={{

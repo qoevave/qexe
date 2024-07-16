@@ -21,7 +21,7 @@ Many labs require different design setups, and it's a tall order to cater to all
 
 To overcome this issue, the QExE tool takes a modular design approach. Using a set a defined interfaces for methods, questionnaires, and OSC communication, different modules can be programmed and imported by experts users to work within the tool, while leaving the base QExE feature set clutter-free for normal users wishing to explore the current implementation.
 
-#### Pick and choose. Test control, VR platform, or both?
+#### Pick and choose: Test control, VR platform, or both?
 
 Using a Controller-Agent-based setup, we can separate out "test control" aspects from "virtual platform" aspects. 
 
@@ -40,7 +40,7 @@ Here's quick glance at the overall architecture of the QExE tool. Check out the 
 
 
 
-## Why Max/MSP and Unity?
+## Why MaxMSP and Unity?
 
 There several tools that could have been used to develop either the Controller or Agent. Front runners for the QExE Host could have been JUCE, for example. For the Client, Unreal Engine would have been an option. In the end, it all comes back to which program best fits your use-case. 
 
@@ -48,9 +48,9 @@ There several tools that could have been used to develop either the Controller o
 
 MaxMSP is a graphical programming tool. It's basic principle of having graphical objects that represent a class means that those will minimal coding experience can jump in to create something with little trouble. This graphical programming is done in something called a "patch". A patch can be as big or small as you like, contain graphic components for designing quick user interfaces, and contain javascript code. While this does have drawbacks for those with a deeper coding background, those who have little coding experience that wish to adapt the QExE tool have a much higher chance of success, than if they were to open up some source code to a C++ project. 
 
-#### "Some things, are easier coded than drawn..."
+#### Some things, are easier coded than drawn...
 
-Very true! If we want to get more organized, we can create a Javascript object in MaxMSP and script out some functions. Going deeper into some DSP we can also open up a GEN object. Read more about that [here](https://docs.cycling74.com/max8/vignettes/gen_overview).
+If we want to get more organized, we can create a Javascript object in MaxMSP and script out some functions. Going deeper into some DSP we can also open up a GEN object. Read more about that [here](https://docs.cycling74.com/max8/vignettes/gen_overview).
 
 Most of the QExE Host is programmed done using a combination of patchers with corresponding javascript code objects. 
 

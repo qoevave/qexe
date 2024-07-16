@@ -7,7 +7,7 @@ custom_edit_url: null
 
 ## Discover...
 
-[**What**](/docs/intro#discover-what-id) the QExE tool is, [**why**](docs/intro#discover-why-id) it's here, and [**who**](/docs/intro#discover-who-id) it's for...
+[**What**](./intro#discover-what-id) the QExE tool is, [**why**](./intro#discover-why-id) it's here, and [**who**](./intro#discover-who-id) it's for...
 
 ### What?{#discover-what-id}
 
@@ -16,8 +16,8 @@ The quality of experiece of evaluation (QExE) tool is a framework for streamlini
 Using MaxMSP and Unity, the QExE tool can be used to automate subjective experiments using several quality evaluation methods and questionnaires, employ a range of audio and visual stimuli possibilities including 360 video, CGI graphics, object-based audio, and Ambisonics, and track subjective exploration behavior and VR interactions for further analysis. 
 
 For more information on what the QExE tool is and what it offers, take a look at the following recourses:
-- 📋 The [feature list](/features/features.mdx) for an overview, or specific information on quality evaluation [methods](./features/methods) or [questionnaires](./features/questionnaires). 
-- 📚 The [terminology and concepts](./getting-started/terminology) page, for a description of important aspects within the tool.
+- 📋 The [feature list](./features/features.mdx) for an overview, or specific information on quality evaluation [methods](./features/methods) or [questionnaires](./features/questionnaires). 
+- 📚 The [terminology and concepts](./terminology) page, for a description of important aspects within the tool.
 - 🏡 The [evaluations scene](./getting-started/eval-scenes) page, for an overview of what combinations of audiovisual content can be tested.
 - 🛠️ The [architecture](./qexe-architecture/overview) documentation to learn why the tool is built the way it is and how it works
 
@@ -45,7 +45,7 @@ Hi 👋🏼 I want to ...
 - ✅ ... conduct research on high-order cognitive contructs in VR such as cognitive load. 
 - ✅ ... compare a 360 video scene vs. CGI scene. 
 
-For more information, see the QExE [feature tiers](./features/features) for more information. 
+For more information, see the QExE [feature tiers](./features/features.mdx) for more information. 
 
 ## How Can I Download?
 
@@ -63,7 +63,7 @@ The QExE tool release is a step towards building a larger framework for evaluati
 
 ### 📨 Invitation to Contribute
 
-If you choose to employ the QExE tool in your studies and have adapted the mechanics, or provided new functionality you feel may benifit others, ***please get in touch***. In our goal to continuously update the tool to the benifit of the research community. The best way to acheive this, is to have direct feedback from the community itself. 
+The best way to to improve the tool is to have direct feedback from the community itself. If you wish to contribute, please feel free to get in touch.
 
 
 ## Publication

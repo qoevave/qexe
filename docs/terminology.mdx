@@ -15,12 +15,15 @@ However, some things a slightly different in virtual reality, so the following d
 | Concept | Description |
 |- | - |
 | Method | A test method is a means of collecting dependent variable data. In the QExE tool, [five methods](./features/methods) are currently available and are a mandatory entry in the config file. The chosen method will effect how the `AudioVSTConditions` and `Scenes` will be used to calculate the number of unique test items. |
-| Questionnaire | A questionnaire is research instrument that contains a set of phrases, statements, or questions that subjects must provide a response to. In the QExE tool, the [questionnaires](./features/quesionnaires) are a supplementary tool that can be used in conjunction with the primary method to gain insight into more additundal or cogntive aspects. |
-| Modality | Modality refers to the audio, visual, or audiovisual sensory streams. In the QExE tool, by altering the [modality](./config-file) to A, V, or AV, we can adjust which elements of a config file can be used to consutrct multiple items. |
+| Questionnaire | A questionnaire is research instrument that contains a set of phrases, statements, or questions that subjects must provide a response to. In the QExE tool, the [questionnaires](./features/questionnaires) are a supplementary tool that can be used in conjunction with the primary method to gain insight into more additundal or cogntive aspects. |
+| Modality | Modality refers to the audio, visual, or audiovisual sensory streams. In the QExE tool, by altering the [modality](./getting-started/config-file) to A, V, or AV, we can adjust which elements of a config file can be used to consutrct multiple items. |
 | Scene | A scene represents a collection of uni- or multi-modal stimuli in a 3D space. From audio domains, this is likert to audio sample files. For video domains, this is analogous to video snippets used. Both of these "raw" stimuli will go through some processing to form our conditions under test. For VR, scenes are audiovisual and therefore require information in both. In the QExE tool, scenes can use a combination of either 360 video files or CGI visuals, together with either Ambisonics or object-based audio. |
 | Audio Condition | In traditional quality evaluation, this often refers to some algorithm or offline processing that is applied to our samples. For interactive VR, we often want to test things in real-time. Therefore an audio condition represents the `AudioVSTConditions` that can be loaded in to render the audio in real-time. Depending on the method used, one or more audio conditions may be presented to the user to swtich between in real-time y using buttons A, B, C...
 | Test Item | An item represents the base block of a test. Subject will work through evaluation items progressively in their test until they are complete. In the QExE toolbar, the test items are calculated using the method, modality, scenes, and audio conditions.  
 
 ## Example Scene
 
-![Concepts illustration](../static/img/concepts_illustration.png)
+Below is an illustration of the concepts above and how they relate to components inside an actual scene. 
+The key-value entires in each point relate to the entries in the [config file](./getting-started/config-file). 
+
+![Concepts illustration](../static/img/Concepts.png)

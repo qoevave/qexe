@@ -3,5 +3,561 @@ sidebar_position: 2
 custom_edit_url: null 
 ---
 
+import CenteringImage from '../../src/components/centeringImage';
+
+
 # Max/MSP Controller
 
+## testmanager.js 
+
+#### Location
+
+```
+my-qexe-project
+└─ qexe_controller
+   └─ src
+      └─ code
+         ├── ...
+         ├── testmanager.js
+         └── ...
+```
+
+The `testmanager.js` script is the main code within the controller. From here, we can break down the highlighted functions. 
+
+### loadTest()
+
+
+**_objtxt** : The JSON configuration file is saved into this dictionary which is accessed throughout the testmanager.js file.
+
+```js {20,29-30,34,37,51,54} title="/src/code/testmanager.js" showLineNumbers
+function loadTest(filePath)
+{
+    var dict = new Dict;
+    dict.import_json(filePath);
+
+    // Output the dict to a dict.view class for viewing in the visual environment.
+    outlet(outlet_JSON, "json", 'clear');
+    outlet(outlet_JSON, "json", "dictionary", dict.name);
+
+    // load the JSON file as a String.
+    var fileString = utilsmodule.loadFile(filePath);
+    SEND_PANEL_DIRECTORY_INFORMATION.message("DisplayTestFile", filePath);
+
+    // Removes any dynamically created objects in max patches. 
+    // Objects created dynamically should be instantiated as global variables to be accessed in all functions. 
+    clearPatchDynamicObjects();
+
+    // Convert the string to a javascript object.
+    try{
+        _objtxt = JSON.parse(fileString);
+    }catch(e){
+        error("Error loading file:", e);
+    }
+
+    // Set the incoming and outgoing UPD port information for osc messages.
+    setNetwork();
+
+    // Load in the correct questionnaire class.
+    setQuestionnaire(_objtxt.testSettings.questionnaireType,
+                     _objtxt.testSettings.questionnaireIntegration);
+
+    // Load in the correct method class and configure the test.
+    numberOfAudioRenderingVSTs = _objtxt.testSettings.audioRendering.audioVSTConditions.length;
+    setTestMethod(_objtxt.testSettings.methodType);
+
+    // Calculate the paradigm based of off the set variables in the JSON.
+    calculateParadigm();
+
+    // Randomize the order of test items. 
+    randomizeSequence();
+
+    // Set directories. 
+    SEND_MODULE_RESULTS_WRITER.message("OpenFolder", RESULTSDIRECTORY);
+    CONTENTDIRECTORY = _objtxt.testSettings.pathToAudioVideoScenesContent;
+    SEND_PANEL_DIRECTORY_INFORMATION.message("DisplayContentDirectory", CONTENTDIRECTORY);
+
+    // Reset the test back to the _Main scene if a new file is opened.
+    UpdateScenePanelInformation(-1);
+
+    // Set the information in the OSC manager. 
+    SetOSCManager();
+
+    // Set the condition info to resultsWriter and Method.
+    SetaudioConditions(_objtxt.testSettings.audioRendering);
+
+    // Generic test information.
+    DisplayTestInformation();
+}
+```
+
+### setQuestionnaire(args)
+
+#### Description 
+
+- Takes the `questionnaireType` and searches for the the correct entry. A string is then sent to the questionnaire containter to load a certain `.maxpat` file. 
+- Both the `questionnaireType` and `questionnaireIntegration`entires are sent to the results module to ensure test information is also stored in the results files.
+
+#### Customization options
+
+- If you would like to include your own questionnaire `.maxpat` file, add another case entry here that replaces the bpatcherQuestionnaire with the name of your `.maxpat` file. Make sure your `.maxpat` file has requirements to communicate with the rest of the code. 
+
+<details>
+<summary>
+... show code ...
+</summary>
+```js title="/src/code/testmanager.js"
+function setQuestionnaire(questionnaireType, integrationType) {
+    if(questionnaireType === null){
+        SEND_MODULE_RESULTS_WRITER.message("SetInfoForQuestionnaire", 0, "null", "None");
+        return;
+    }
+
+    switch (questionnaireType){
+        case 'SSQ':          
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherQuestionnaire replace questionnaire_SSQ");
+            break;
+
+        case "NASA-TLX":
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherQuestionnaire replace questionnaire_NASA-TLX");
+            break;
+
+        default :
+            error("Error: questionnaireType : ", questionnaireType, " is not recognized in .json file.", "\n");
+    }
+
+    post("Importing questionnaire:", questionnaireType, '\n');
+    SEND_MODULE_RESULTS_WRITER.message("SetInfoForQuestionnaire", 1, questionnaireType, integrationType);
+}
+```
+</details>
+
+
+### setTestMethod(args)
+
+#### Description 
+
+- Takes the `methodType` and searches for the the correct entry. A string is then sent to the method containter to load a certain `.maxpat` file. For certain methods, the number of audio renderers is also sent to the method container to initialize the test via the `setTest()` function. 
+
+#### Customization options
+
+- To include your method `.maxpat`,  add another case entry here that replaces the bpatcherQuestionnaire with the name of your `.maxpat` file. However, additional code must be added in order for the test items to be constructed. See calculateParadigm() below. 
+
+
+<details>
+<summary>
+... show code ...
+</summary>
+```js title="/src/code/testmanager.js"
+function setTestMethod(method) {
+    switch (method)
+    {
+        case 'ACR':
+            post("Importing test methodology: ", method, "\n");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherMethod replace method_ACR");
+            break;
+
+        case 'MS':
+            post("Importing test methodology: ", method, "\n");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherMethod replace method_MS");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("setTest", numberOfAudioRenderingVSTs);
+            break;
+
+        case 'PC':
+            post("Importing test methodology: ", method, "\n");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherMethod replace method_PC");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("setTest",numberOfAudioRenderingVSTs);
+            break;
+
+        case 'MUSHRA':
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherMethod replace method_MUSHRA");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("setTest", numberOfAudioRenderingVSTs);         
+            break;
+
+        case 'EBA':
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("patch", "script sendbox bpatcherMethod replace method_EBA");
+            SEND_MODULE_METHOD_QUESTIONNAIRE.message("setTest", numberOfAudioRenderingVSTs);
+            break;
+
+        default:
+            error("Error: methodType : ", method, " is not recognized in .json file.", "\n");
+    }
+}
+```
+</details>
+
+### module_MethodQuestionnaireContainer.maxpat
+
+The max patch below shows how messages sent into the `thispatcher` object can load new max patches in real time. 
+Both the method container (left) and the questionnaire container (right) start of with a default empty max patch. From the functions above (`setQuestionnaire()` and `setTestMethod()`) the correct max patches will be loaded into each of these modules respectively. 
+
+```
+my-qexe-project
+└─ qexe_controller
+   └─ src
+      └─ patchers
+         ├── ...
+         ├── module_MethodQuestionnaireContainer.maxpat
+         └── ...
+```
+
+#### Patch-mode
+
+<CenteringImage 
+    imageUrl={'../../img/screenshots/method_container.png'}
+    alt={"method container"}
+    width={"50%"}
+/>
+
+#### Presentation-mode (with ACR method and SSQ questionnaire)
+
+
+
+<CenteringImage 
+    imageUrl={'../../img/screenshots/MaxMSP_3.png'}
+    alt={"method container"}
+    width={"80%"}
+/>
+
+
+### calculateParadigm()
+
+#### Description
+
+- Takes the `methodType` and searches for the the correct entry.
+- Methods from code imports are then used to calculate a set of items.
+- The calculated set of test items is then saved into a dict called `objtmptxt` which is used throughout the test to access the correct variables. 
+
+#### Customization options
+
+- To include your own test method, you must also include a function to caluclate the correct number of test items. As an example, the method `ACRParadgm` is contained within the `_method_ACR_calc` object. This is imported at the top of the `testmanager.js` file. 
+
+<details>
+<summary>
+... show code ...
+</summary>
+
+```js title="/src/code/testmanager.js"
+function calculateParadigm() {
+    var objtmptxt = "";
+    var thisTest = new Dict("thisTest");     // Dictionary for the test.
+
+    switch(_objtxt.testSettings.methodType)  // Create the paradigm.
+    {
+        case 'ACR':
+            thisTest = _method_ACR_calc.ACRParadigm(_objtxt);
+            break;
+
+        case 'MS':
+            thisTest = _method_EBA_calc.EBAParadigm(_objtxt);
+            break;
+
+        case 'PC':
+            thisTest = _method_PC_calc.PCParadigm(_objtxt);
+            break;
+
+        case 'MUSHRA':
+            thisTest = _method_MUSHRA_calc.MUSHRAParadigm(_objtxt);
+            break;
+
+        case 'EBA':
+            thisTest = _method_EBA_calc.EBAParadigm(_objtxt);
+            break;
+
+        default :
+            error("Test method does not currently exist. Cannot construct test items. '\n' ");
+            break;
+    }
+
+    outlet(outlet_JSON, "paradigm", 'clear');
+    outlet(outlet_JSON, "paradigm", "dictionary", thisTest.name);
+
+    thisTest.export_json("jsontmp.json");                   // Export the paradigm to a json file.
+    var objtmptxt = utilsmodule.loadFile("jsontmp.json");   // Reimport the paradigm json.
+
+    try {
+        _objParadigm = JSON.parse(objtmptxt);               // Parse into a javascript object.
+    } catch (e) {
+        post("Error parsing jsontmp.json");
+        return false;
+    }
+
+    SEND_PANEL_CURRENT_ITEM_SIMPLE.message("numberOfItems", 
+                                            _objParadigm.tmpItem.length);
+
+    SEND_MODULE_RESULTS_WRITER.message("SetInfoForResults", 
+                                        _objtxt.testSettings.methodType, 
+                                        _objtxt.testSettings.modalityRatio, 
+                                        _objParadigm.tmpItem.length);
+
+    SENDTO_PANEL_SCENE_INFORMATION.message("DisplayNumberOfItems",
+                                         _objParadigm.tmpItem.length);
+
+}
+```
+
+</details>
+
+### setOSCManager()
+
+#### Description
+
+- Sends the OSC information to the OSC manager regarding the ip address and port numbers. 
+- Sends the test information to the OSC manager such that the variables can be quickly sent to the conntection unity agent upon request. 
+
+#### Customization options
+
+- If you wish to send more variables to the qexe unity agent, you can add them here and augment the `set_paradigm_info()` function in the `module_osc_handler.js` script. 
+
+<details>
+<summary>
+... show code ...
+</summary>
+```js title="/src/code/testmanager.js"
+function SetOSCManager() {
+    SEND_MODULE_OSC_MANAGER.message("setOSC", 
+                                    _objtxt.testSettings.ip,                        // set the ip address 
+                                    _objtxt.testSettings.udpPortOut,                // set the outgoing OSC port number
+                                    _objtxt.testSettings.udpPortIn);                // set the incoming OSC port number
+
+    SEND_MODULE_OSC_MANAGER.message("SetLocalVars", 
+                                    "set_paradigm_info", 
+                                    _objtxt.testSettings.methodType,                // set method.
+                                    numberOfAudioRenderingVSTs,                     // set number of VSTs loaded.
+                                    _objtxt.testSettings.questionnaireType,         // set type of questionnaire.
+                                    _objtxt.testSettings.questionnaireIntegration); // set the intrgation mode of the questionnaire.                   
+}
+```
+</details>
+
+
+### SetaudioConditions(args)
+
+#### Description
+
+- Takes the `audioRendering` key and values entires from the JSON configuration file and loads the relevant VSTs. 
+- Initially creates the interface buttons needed to be able to open the VSTs GUIs. 
+- To load the actual audio rendering VSTs, a loop will itterate through the number of VSTs, and provide the path for a VST maxMSP object to be loaded, and plugged. Information in this loop is then collected and finally sent to the results writer so that all results files have the required test data. 
+
+<details>
+<summary>
+... see code ...
+</summary>
+```js title="/src/code/testmanager.js"
+function SetaudioConditions(AudioRendering) {
+    if (AudioRendering.active === 1){
+
+        SENDTO_PANEL_AUDIO_INFORMATION.message("SetButtons", 
+                                                AudioRendering.renderingPipeline, 
+                                                AudioRendering.audioVSTConditions.length);
+
+        var ConditionIDArray = [];      // Array of dll id's for results.
+        var ConditionPathArray = [];    // Array of paths/to/dlls for results.
+        var HRTFInfoArray = [];         // HRTF info for the results.
+        var ParameterMap = [];          // Parameter maps used for the conversion of coordinate systems for results. 
+        vstindex = 0;                   // Int for connecting the VST outlets.
+
+        for(i=0; i<AudioRendering.audioVSTConditions.length; i++){
+
+            // Set the poly~ VST target (needs to be done in separate message)
+            SENDTO_PANEL_AUDIO_INFORMATION.message("VSTContainer", 
+                                                    AudioRendering.renderingPipeline, 
+                                                    "target", (i+1));
+
+            // Load the VST to the correct poly~ VST object.                                         
+            SENDTO_PANEL_AUDIO_INFORMATION.message("VSTContainer", 
+                                                    AudioRendering.renderingPipeline, 
+                                                    "load", 
+                                                    AudioRendering.pathToVSTs + "/" + AudioRendering.audioVSTConditions[i].vst, 
+                                                    AudioRendering.pathToVSTs + "/" + AudioRendering.audioVSTConditions[i].vstParameterMap, 
+                                                    vstindex);
+            vstindex = vstindex + 2;
+
+            // Push information to ConditionIDArray for the results file.  
+            ConditionIDArray.push(AudioRendering.audioVSTConditions[i].conditionID);
+            ConditionPathArray.push(AudioRendering.audioVSTConditions[i].vst);
+            HRTFInfoArray.push(AudioRendering.audioVSTConditions[i].hrtf)
+            ParameterMap.push(AudioRendering.audioVSTConditions[i].vstParameterMap ? AudioRendering.audioVSTConditions[i].vstParameterMap : "null");
+        }
+        SEND_MODULE_RESULTS_WRITER.message("SetConditionID", ConditionIDArray);
+        SEND_MODULE_RESULTS_WRITER.message("SetConditionPath", ConditionPathArray);
+        SEND_MODULE_RESULTS_WRITER.message("SetConditionHRTF", HRTFInfoArray);
+        SEND_MODULE_RESULTS_WRITER.message("SetConditionParameterMap", ParameterMap);
+    }
+}
+```
+</details>
+
+## module_osc_handler.js 
+
+#### Location
+
+```
+my-qexe-project
+└─ qexe_controller
+   └─ src
+      └─ code
+         ├── ...
+         ├── module_osc_handler.js
+         └── ...
+```
+
+### SetLocalVars(...args)
+
+#### Description
+
+- Function called from the `testmanager.js` `setOSCManager()` method to set local variables. 
+
+<details>
+<summary>
+... see code ...
+</summary>
+```js title="/src/code/module_osc_handle.js"
+max.addHandler('SetLocalVars', (...args) => {
+    var msg = args[0]; // identify the message.
+    
+    switch (msg){
+        case 'set_paradigm_info':
+            method = args[1];                   // set method
+            numberOfConditions = args[2];       // set number of conditions
+            questionnaire = args[3];                // set questionnaire
+            questionnaireIntegration = args[4]; // set questionnaire integration type
+            break;    
+            
+        case 'set_subjects_results_directory':
+            subjectResultsDirectory = args[1];
+            break;
+        default:
+            max.post('/control/testmanager has no handler for value', ...args);
+            break;
+    }
+});
+```
+</details>
+
+### TestManager(...args)
+
+#### Description
+
+- Handles all incoming calls from the unity to to either get information from the `testmanager.js`, or respond directly with local variables. The first argument in the `max.output()` method contains either the string `"testmanager"` or `"toclient"` which routes all subsequent data to the `testmanager.js` or outgoing OSC port.  
+
+#### Customization options
+
+- You can add more cases here to handle new incoming OSC messages from Unity. The format of the incoming call should be `"TestManager, msg, ... "` 
+
+<details>
+<summary>
+... see code ...
+</summary>
+```js title="/src/code/module_osc_handle.js"
+max.addHandler('TestManager', (...args) => {handle_TestManager(...args)});
+
+function handle_TestManager(...args){
+    var msg = args[0];
+
+    if(jsonLoaded===0){
+        max.post('WARNING: no json test loaded', jsonLoaded);
+        return;
+    }
+
+    switch (msg){
+        case 'get_next_item':
+            max.post('Unity requesting next item information');
+            max.outlet('testmanager', 'OSCCall', 'getitem');
+            break;
+        case 'set_next_item':
+            max.post('Unity setting next item');
+            max.outlet('testmanager', 'OSCCall', 'setitem');
+            break;
+        case 'client_is_active':
+            max.post('Client is active:', args[1], max.POST_LEVELS.WARN);
+            max.outlet('toclient', '/client/configuration/', 'json_loaded', 1);
+            break;
+        case 'get_paradigm_information':
+            max.post('Unity requesting method information');
+            handle_SendToUnity('give_paradigm_information');
+            break;
+        case 'get_results_directory':
+            max.outlet('testmanager', 'OSCCall', 'getdirectory');
+        default:
+            max.post('/control/testmanager has no handler for msg value');
+            break;
+    }
+}
+```
+</details>
+
+### SendToUnity(...args)
+
+#### Description
+
+- Handles all incoming calls to send information to Unity. The first argument in the `max.output()` method contains the string `"toclient"` which routes all subsequent data to the outgoing OSC port.  
+
+#### Customization options
+
+- If you would like to send more information to Unity, you can add another case `msg` here. The format of the incoming call should be `"SendToUnity, msg, ... "`.
+
+<details>
+<summary>
+... see code ...
+</summary>
+```js title="/src/code/module_osc_handle.js"
+max.addHandler('TestManager', (...args) => {handle_TestManager(...args)});
+
+function handle_TestManager(...args){
+    var msg = args[0];
+
+    if(jsonLoaded===0){
+        max.post('WARNING: no json test loaded', jsonLoaded);
+        return;
+    }
+
+    switch (msg){
+        case 'get_next_item':
+            //max.post('Unity requesting next item information');
+            max.outlet('testmanager', 'OSCCall', 'getitem');
+            break;
+        case 'set_next_item':
+            max.post('Unity setting next item');
+            max.outlet('testmanager', 'OSCCall', 'setitem');
+            break;
+        case 'client_is_active':
+            max.post('Client is active:', args[1], max.POST_LEVELS.WARN);
+            max.outlet('toclient', '/client/configuration/', 'json_loaded', 1);
+            break;
+        case 'get_paradigm_information':
+            //max.post('Unity requesting method information');
+            handle_SendToUnity('give_paradigm_information');
+            break;
+        case 'get_results_directory':
+            max.outlet('testmanager', 'OSCCall', 'getdirectory');
+        default:
+            max.post('/control/testmanager has no handler for msg value');
+            break;
+    }
+}
+```
+</details>
+
+### module_OSCManager.maxpat 
+
+The max patch below shows where the `module_osc_handler.js` code is used. 
+Incoming OSC messages that do not have a specific address in the max `route` object are fed into `module_osc_handler.js`.
+Outgoing messages are either routed to the `testmanager.js` script, or to the outgoing UDP port.
+
+#### Location
+
+```
+my-qexe-project
+└─ qexe_controller
+   └─ src
+      └─ patchers
+         ├── ...
+         ├── module_OSCManager.maxpat
+         └── ...
+```
+
+<CenteringImage 
+    imageUrl={'../../img/screenshots/module_OSCManager.png'}
+    alt={"method container"}
+    width={"90%"}
+/>

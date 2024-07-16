@@ -128,7 +128,7 @@ Visit the [Evaluation Scenes](./eval-scenes) page on a breakdown of the JSON ent
 
 ## Complete Example
 
-Here's an example config file you can use with the InteractionDemo provided in the Unity agent.
+Here's an example config file you can use with the `_interactionDemo` scene provided in the qexe agent unity project.
 
 ```JSON
 {

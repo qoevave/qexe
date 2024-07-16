@@ -10,9 +10,10 @@ import ConfigScene from "/img/configScene.png"
 The QExE tool differentiates between three different types of scene. 
 - The [`_config`](./scene-types#_config-scene) scene
 - The [`_questionnaire`](./scene-types#_questionnaire-scene) scene, and
-- The [evaluation scenes](./scene-types#evaluation-scenes). An evaluation scene can consist of CGI content which is defined in the Unity client as a `.unity` file, or the `_videoPlayer.unity` scene, which has been pre-programmed in the Unity client to play video files from a local URL.
+- The [`_evaluation` scenes](./scene-types#evaluation-scenes). 
+    - An evaluation scene can consist of CGI content which is defined in the Unity client as a `.unity` file, or the `_videoPlayer.unity` scene, which has been pre-programmed in the Unity client to play video files from a local URL.
 
-## _config Scene
+## _config Scene{#_config-scene}
 
 The `_config` scene is ***always the starting scene*** in a test. This serves two purposes:
 1. We give subjects / users a virtual space for them to become acclimatize to virtual reality, the headset, controls, and movement. It's important to lets subjects prepare themselves to start a test, and not just throw them into an evaluation scene.
@@ -24,23 +25,27 @@ The `_config` scene is ***always the starting scene*** in a test. This serves tw
 
 On the right hand side inspector, we see the component `TestManager` script. As described in the [paper] this is the client shadow TestManager to the QExE host TestManager.
 
-## _questionnaire Scene
+## _questionnaire Scene{#_questionnaire-scene}
 
 The `_questionnaire` scene is included as a virtual space for subjects to answer a specified [questionnaire](../features/questionnaires/) on a virtual interface. The graphics are simple, like the `_config` scene, but can always be adapted to suit your needs. 
 
-## _myEvaluation Scenes
+## _evaluation Scenes{#evaluation-scenes}
 
 Evaluation scenes fall under two categories:
 1. CGI evaluations scenes 
 2. 360 video evaluation scenes
 
+Take a look at the documentation for possibilities on [creating your evaluation scene](./eval-scenes/).
+
 ### 1. CGI Evaluation Scenes
 
-The CGI evaluation scenes are designed in Unity. These can include anything you like, that Unity can do - the skybox is your limit! In Unity, scenes that have been designed, are saved as a `.unity` file, prefixed by the name of your scene e.g., `my-amazing-scene.unity`. If we want to use `my-amazing-scene` as an evaluation scene in our test, we simply specify `UnitySceneID : my-amazing-scene` in our [config file](./config-file/) in the `Scenes` array. 
+The CGI evaluation scenes are designed in Unity. These can include anything you like, that Unity can do - the skybox is your limit! 
+
+In Unity, scenes that have been designed, are saved as a `.unity` file, prefixed by the name of your scene e.g., `my-amazing-scene.unity`. If we want to use `my-amazing-scene` as an evaluation scene in our test, we simply specify `unityScene_ID : my-amazing-scene` in our [config file](./config-file/) in the `Scenes` array. 
 
 ### 2. 360 Video Scenes
 
-If your visual content is a 360 video, then you can simply specify `UnitySceneID : _videoPlayer` in our config file. The `_videoPlayer` scene has a small video manager which will receive a URL from the QExE host.   
+If your visual content is a 360 video, then you can simply specify `unityScene_ID : _videoPlayer` in our config file. The `_videoPlayer` scene has a small video manager which will receive a URL from the QExE host.   
 
 :::tip CGI vs. Video?
 
@@ -48,5 +53,5 @@ With Unity being controlled through our QExE host, we can mix and match our scen
 
 ::: 
 
-> Take a look at the documentation for possibilities on [creating your evaluation scene](./eval-scenes/).
+
 

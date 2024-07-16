@@ -24,17 +24,21 @@ More questionnaires will be added in future updates. In you interested in contri
 
 :::
 
-Three options are provided in the [configuration file](../getting-started/config-file) to integrate the questionnaire into your test design, `Active`, `Type`, and `Integration`. 
+Options are provided in the [configuration file](../getting-started/config-file) to integrate the questionnaire into your test design: `questionnaireType`, and `questionnaireIntegration`. 
 
-- `Active` entries are `1` or `0`, setting the questionnaire on/off respectively._createMdxContent
 - `Type` entries are the name of the desired questionnaire.
-- `Integration` entries are either `Lace` or `End`. 
-    - The `Lace` entry will insert the specified questionnaire between each presented item, allowing for item-dependent responses for more detailed analysis at the cost of a higher task burden for subjects. 
-    - The `End` entry will append all the test items with the specified questionnaire allowing for a more manageable test, with questionnaire data representing the holistic evaluation experience.
+- `Integration` entries are either `Lace`, `End`, or `None`.
+```JSON
+"questionnaireType" : "NASA-TLX",
+// one of the following ..
+"questionnaireIntegration" : "Lace", // <- Inserts questinonaire between each scene. 
+"questionnaireIntegration" : "End", // <- Inserts questinonaire at end of test. 
+"questionnaireIntegration" : "None", // <- Ignores questionnaire settings. 
+```
 
-## Questionnaires
+## `questionnaireType :`
 
-### NASA-TLX
+### `NASA-TLX`
 
 <TextImage
     description={{
@@ -62,7 +66,7 @@ Three options are provided in the [configuration file](../getting-started/config
 | Effort | How hard did you have to work (mentally and physically) to accomplish your level of performance? | 
 | Frustration Level | How insecure, discourages, irritated, stressed, and annoyed vs. secure, gratified, content, and relaxed did you feel during the task? |
 
-### SSQ
+### `SSQ`
 
 <TextImage
     description={{

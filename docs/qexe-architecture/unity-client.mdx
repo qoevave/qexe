@@ -2,5 +2,188 @@
 sidebar_position: 3
 custom_edit_url: null 
 ---
+import CenteringImage from '../../src/components/centeringImage';
+import TextImage from '../../src/components/textImageLeft';
+import ShadowTestManager from '../../static/img/screenshots/TestManager_2.png'
 
 # Unity Client
+
+## (shadow) TestManager.cs
+
+Inside the Unity `_config` scene the shadow `testmanager.cs` component can be found in the Unity hierarchy under the `TestManager` object.
+
+The TestManager component will persis from the `_config` scene into all subsequent `_evaluation` and `_questionnaire` scenes, to ensure that the correct interfaces, and the next item can be correctly loaded, until returning to the `_config` scene.
+
+### Inspector
+
+<TextImage
+    description={{
+        title: "",
+        content: (
+        <p>
+        The shadow testmanager.cs in the QExE agent Unity project receives information from the QExE Controller throughout the test. On the right hand side we have a number of field entries: <br/><br/>
+        <b>OSCManager</b> is the object that has both transmitter and receiver for the OSC connection over UDP. <br/> 
+        <b>btn/Next</b> and <b>btn/StartPlayback</b> are mandatory buttons that need to be found on an imported method interface.<br/><br/>
+        <b>Current Item</b> shows information related to the current evaluation item.<br/>
+        <b>Next Item</b> shows the same information related to the next item. <br/><br/>
+        The <b>Questionnaire</b> field shows the name of the questionnaire received from the QExE controller, and how it should be integrated. Below is a user defined array where Unity interfaces can be added. If Unity detects an interface matching the name of the received questionnaire, this will be used.  <br/><br/>
+        The <b>Methodology</b> field shows the name of the test method received from the QExE controller. Additionally, the number of parallel audio conditions is also sent which is needed to set interface number of buttons and sliders. Below is a user defined array where Unity interfaces can be added. If Unity detects an interface matching the name of the received methodology, this will be used.  
+        </p> 
+        ),
+    }}
+    imagePath={ShadowTestManager}
+    />
+
+    ### SetMethodologyInterface(args)
+
+    #### Description
+
+    - Gets called on every onSceneLoad(), with the name of the received test method as an argument. 
+    - The method name is than compared against the list of methods seen in the inspector. If a match is found, the method prefab is instantiated in the scene as a child of a specific object that the user can turn on and off. 
+    - Once instantiated, references to the btn/Next and btn/StartPlayback buttons are found such that we can control OSC messages. 
+
+    #### Customization options
+
+    - If you wish to add your own method, then add a new empty field entry into the testmanager.cs inspector, and drag and drop your method prefab into the new field. Be sure to have adapted the QExE controller setTestMethod() function to recognize your questionnaire name, in addition to creating a corresponding `.maxpat` to load into the method container module, and code to calculate a the number of test items. 
+
+    <details>
+    <summary>
+    ... see code ...
+    </summary>
+    ```cpp title="./Assets/QExE/Scripts/TestManager.cs"
+    private void SetMethodologyInterface(string method){
+
+        // Instantiate correct test interface prefab
+        foreach (GameObject Interface in MethodologyInterfaces){
+            if (Interface.name == method){
+              Debug.Log("<color=bright_white><b>QExE: </b></color> Method found. " + Interface.name + ": The method interface provided by the server(JSON file) is listed in the Method Interfaces array. Importing into scene.");
+              _Methodology = Instantiate(Interface, TestInterface.transform.position, Quaternion.Euler(TestInterface.transform.rotation.eulerAngles.x, TestInterface.transform.rotation.eulerAngles.y, TestInterface.transform.rotation.eulerAngles.z), TestInterface.transform) as GameObject;
+            }
+		}
+
+        // Get reference to the Next and Startplayback buttons
+        NextButton = GameObject.Find("btn/Next").GetComponent<Button>();
+        StartPlaybackButton = GameObject.Find("btn/StartPlayback").GetComponent<Button>();
+        InterfaceNextButtonFound = true;
+        InterfacePlayButtonFound = true;
+
+        // Set the next button interatable false, so users do not accidently click it to start with. 
+        NextButton.interactable = false;
+
+        // Add event listeners
+        NextButton.onClick.AddListener(() => OnNextButton());
+        StartPlaybackButton.onClick.AddListener(() => OnStartPlayback());
+
+        TestInterface.SetActive(false);
+    }
+    ```
+    </details>
+
+    ### SetQuestionnaireInterface(args)
+
+    #### Description 
+
+    - Gets called on every onSceneLoad() if the current scene is equal to `_questionnaire`, with the name of the received questionnaire as an argument. 
+    - The questionnaire name is than compared against the list of methods seen in the inspector. If a match is found, the questionnaire prefab is instantiated in the scene as a child of a specific object. 
+    - Once instantiated, references to the btn/Next button is found such that we can control OSC messages. 
+
+    #### Customization options
+
+    - If you wish to add your own questionnaire, then add a new empty field entry into the testmanager.cs inspector, and drag and drop your questionnaire prefab into the new field. Be sure to have adapted the QExE controller setQuestionnaire() function to recognize your questionnaire name, in addition to creating a corresponding `.maxpat` to load into the questionnaire container module.  
+
+    <details>
+    <summary>
+    ... see code ...
+    </summary>
+    ```cpp title="./Assets/QExE/Scripts/TestManager.cs"
+    private void SetQuestionnaireInterface(string questionnaire)
+    {
+        // Instantiate correct test interface prefab
+        GameObject QuestionnaireInterface = GameObject.Find("QExEQuestionnaireInterface");
+        foreach (GameObject Interface in QuestionnaireInterfaces)
+        {
+            if (Interface.name == questionnaire)
+            {
+                Debug.Log("<color=bright_white><b>QExE: </b></color>Questionnaire found. " + Interface.name + ": The questionnaire interface provided by the server (JSON file) is listed in the Questionnaire Interfaces array. Importing into scene.");
+                _Questionnaire = Instantiate(Interface, QuestionnaireInterface.transform.position, Quaternion.Euler(QuestionnaireInterface.transform.rotation.eulerAngles.x, QuestionnaireInterface.transform.rotation.eulerAngles.y, QuestionnaireInterface.transform.rotation.eulerAngles.z), QuestionnaireInterface.transform) as GameObject;
+            }
+        }
+
+        // Get reference to the Next and Startplayback buttons
+        NextButton = GameObject.Find("btn/Next").GetComponent<Button>();
+        InterfaceNextButtonFound = true;
+
+        // Add event listeners
+        NextButton.onClick.AddListener(() => OnNextButton());
+    }
+    ```
+    </details>
+
+## TestRecorder.cs
+
+The `TestRecorder.cs` component can be found in the Hierarchy of a scene under the `TestManager` game object. As with the `TestManager.cs`, the script will persist throughout all scenes to stream all relevant data into a behavior.txt file.
+
+### Inspector 
+
+<CenteringImage 
+    imageUrl={'../../img/screenshots/TestRecorder.png'}
+    alt={"test recorder Unity"}
+    width={"60%"}
+/>
+
+#### Description
+
+- Receives the results directory of the subject, and creates a new streamwriter to save all OSC information. 
+
+## QExEPlaybackSync.cs
+
+The `PlaybackSync.cs` component can be found in the Hierarchy of a scene under `QExE XR Set Up > QExEAnimationAudioSync`. 
+
+### Inspector 
+
+<CenteringImage 
+    imageUrl={'../../img/screenshots/PlaybackSync.png'}
+    alt={"playback sync Unity"}
+    width={"60%"}
+/>
+
+#### Description
+
+- Can be used used to add any number of Unity game objects. The game objects will be deactivated until the user presses play, such that any animations that need to happen in sync with separate audio playback can be triggered simultaneously.
+
+## QExEAudioObject.cs
+
+The `QExEAudioObject.cs` component can be attached to any game object inside a scene, that the user would like to track as an audio object. 
+
+### Inspector 
+
+<CenteringImage 
+    imageUrl={'../../img/screenshots/ObjectTrigger.png'}
+    alt={"audio object trigger Unity"}
+    width={"60%"}
+/>
+
+#### Description
+
+- Can be used used to identify any object as a QExE audio object that should be tracked with position and rotation updates when moved. The class features public methods which can then be used to send event-based triggers to the QExE Controller.
+
+<details>
+<summary>
+... see code ...
+</summary>
+```cpp title="./Assets/QExE/Scripts/QExEObjectTrigger.cs"
+public void TriggerAudio(int sampleIndex, string triggerMsg)
+{
+    var message_trigger = new OSCMessage("/stream/objectstrigger/");
+    message_trigger.AddValue(OSCValue.Int(sampleIndex+1));
+    message_trigger.AddValue(OSCValue.String("event"));
+    message_trigger.AddValue(OSCValue.String(triggerMsg));
+
+    if (_transmitter)
+    {
+        if (_transmitter.isActiveAndEnabled)
+            _transmitter.Send(message_trigger);
+    }
+}
+```
+</details>
