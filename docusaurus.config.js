@@ -9,7 +9,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'QExE Tool',
-  tagline: 'A Quality of Experience Evaluation Toolkit',
+  tagline: 'DFG SPP 2236 Audictive, Proj. No. 444832250',
   favicon: 'img/logo_icon_white.ico',
 
   // Set the production url of your site here
@@ -43,20 +43,21 @@ const config = {
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
         theme: {
           customCss: './src/css/custom.css',
         },
       }),
+    ],
+  ],
+
+  plugins: [
+    [
+      './plugins/qoevave-publications',
+      {bibFile: 'static/data/QExE_pubs.bib'},
     ],
   ],
 
@@ -69,17 +70,33 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/MaxUnityInterfaces.png',
+      algolia:{
+        appId: 'AO2JRUV5OE',
+        apiKey: '3c5bc1ecc63c7952b7ee450aa5a26da5',
+        indexName: 'QExE crawl',
+      },
       navbar: {
         title: 'QExE Tool',
         logo: {
           alt: 'QExE Tool',
           src: 'img/logo_icon_white.png',
         },
-        items: [      
+        items: [
           {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
+            type: 'docSidebar',
+            sidebarId: 'tutorialSidebar',
+            position: 'left',
+            label: 'Documentation',
+          },
+          {
+            to: '/publications',
+            label: 'Publications',
+            position: 'left',
+          },
+          {
+            href: 'https://qoevave.github.io',
+            label: 'Parent Project',
             position: 'right',
           },
         ],
@@ -87,7 +104,7 @@ const config = {
       announcementBar: {
         id: 'development',
         content:
-          'This documentation is made acessible for review purposes and is still under development.',
+          'This documentation is made accessible for review purposes and is still under development.',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: false,
@@ -95,9 +112,6 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          {
-
-          },
           {
             title: 'Project',
             items: [
@@ -124,9 +138,6 @@ const config = {
               },
             ],
           },
-          {
-            
-          }
         ],
         logo: {
           alt: 'DFG',
@@ -135,7 +146,7 @@ const config = {
           width: 230,
           height: 30,
         },
-        copyright: `Copyright © ${new Date().getFullYear()} QExE`,
+        copyright: `Copyright © ${new Date().getFullYear()} QoEVAVE`,
       },
       prism: {
         theme: prismThemes.github,

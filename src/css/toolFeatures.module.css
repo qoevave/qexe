@@ -1,103 +1,225 @@
-.featureContainer{
-    padding-top: 40px;
-    display: flex;
-   justify-content: center;
+/* ---------- Section wrapper ---------- */
+
+.featuresSection {
+  width: 100%;
+  padding: 32px 0 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
 }
 
-.featureContainerBot{
-    padding-bottom: 40px;
-    display: flex;
-   justify-content: center;
-}
-
-.profileContainer {
-    display: flex;
-    align-items: center;
-    padding-bottom: 20px;
-    padding-right: 20px;
+@media screen and (max-width: 996px) {
+  .featuresSection {
+    padding: 32px 0 44px;
   }
-  
-.avatar {
+}
+
+/* ---------- Card (image left, content right) ---------- */
+
+.card {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: var(--ifm-background-color, #ffffff);
+  border: 1px solid rgba(91, 131, 113, 0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(91, 131, 113, 0.4);
+}
+
+/* ---------- Image (left column) ---------- */
+
+.cardMedia {
+  width: 100px;
+  flex-shrink: 0;
+  object-fit:contain;
+  display: block;
+  background-color: rgba(91, 131, 113, 0);
+  padding-left: 10px;
+}
+
+/* ---------- Content (right column) ---------- */
+
+.cardContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ---------- Eyebrow ---------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary-darker);
+  margin: 10px 12px 0;
+}
+
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--ifm-color-primary);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ---------- Header (title) ---------- */
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 18px 12px;
+  border-bottom: 1px solid rgba(91, 131, 113, 0.18);
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.4px;
+  color: var(--ifm-heading-color, #1c1e21);
+  line-height: 1.25;
+}
+
+.buttonRounder {
+  border-radius: 999px;
+  font-size: 12px;
+  padding: 4px 14px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* ---------- Body (description) ---------- */
+
+.cardBody {
+  flex: 1;
+  padding: 8px 12px 6px;
+}
+
+.cardDescription {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ifm-color-emphasis-800);
+}
+
+/* ---------- Footer (badges) ---------- */
+
+.cardFooter {
+  margin-top: auto;
+  position: relative;
+  padding: 8px 12px 10px;
+}
+
+.cardFooter::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background-color: rgba(91, 131, 113, 0.18);
+}
+
+.cardBadges {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: rgba(91, 131, 113, 0.15);
+  color: #2c4a3a;
+  border: 1px solid rgba(91, 131, 113, 0.35);
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* ---------- Responsive: stack on small screens ---------- */
+
+@media screen and (max-width: 768px) {
+  .featuresSection {
+    flex-direction: column;
+  }
+
+  .card {
+    flex-direction: column;
+  }
+
+  .cardMedia {
     width: 100%;
-    max-width: 100px;
-    min-width: 80px;
-    border-radius: 50%;
-    margin-right: 16px;
-    object-fit: cover;
-}
-
-.userTitleText {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333; 
-}
-
-.positionText {
-    font-size: 16px;
-    font-style: italic;
-    color: #333; 
-    margin-bottom: -5px;
-    word-wrap: break-word;
-    line-height: 1.2;
-    width: 250px;
+    height: 180px;
   }
+}
 
-  /* Styling one class specially in dark mode */
-[data-theme='dark'] .userTitleText {
+/* ---------- Dark mode ---------- */
+
+[data-theme='dark'] .card {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-color: rgba(165, 204, 185, 0.22);
+}
+
+[data-theme='dark'] .card:hover {
+  border-color: rgba(165, 204, 185, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] .cardMedia {
+  background-color: rgba(165, 204, 185, 0);
+}
+
+[data-theme='dark'] .eyebrow {
+  color: var(--ifm-color-primary-lighter);
+}
+
+[data-theme='dark'] .cardHeader {
+  border-bottom-color: rgba(165, 204, 185, 0.18);
+}
+
+[data-theme='dark'] .cardTitle {
   color: #f1f1f1;
 }
 
-/* Styling one class specially in dark mode */
-[data-theme='dark'] .positionText {
-  color: #f8f8f8;
+[data-theme='dark'] .cardDescription {
+  color: var(--ifm-color-emphasis-700);
 }
 
+[data-theme='dark'] .badge {
+  background-color: rgba(165, 204, 185, 0.12);
+  color: #ffffff;
+  border-color: rgba(165, 204, 185, 0.3);
+}
 
-@media screen and (max-width: 966px) {
-    .userTitleText{
-        padding-top: 10px;
-        font-size: 16px;
-        text-align: center;
-    }
-    .positionText{
-        font-size: 12px;
-        width: 200px;
-        text-align: center;
-    }
-
-    .profileContainer{
-        padding-right: 16px;
-        flex-direction: column;
-    }
-
-    .avatar{
-        min-width: 50px;
-        align-items: center;
-    }
-  }
-  
-  
-  @media screen and (max-width: 450px) {
-    .userTitleText{
-        font-size: 16px;
-        text-align: left;
-        padding-top: 0;
-    }
-    .positionText{
-        font-size: 12px;
-        text-align: left;
-    }
-    .avatar{
-        min-width: 80px;
-    }
-    .profileContainer{
-        padding-right: 0px;
-        flex-direction: row;
-    }
-    .featureContainer{
-        flex-direction: column;
-    }
-    .featureContainerBot{
-        flex-direction: column;
-    }
-  }
+[data-theme='dark'] .cardFooter::before {
+  background-color: rgba(165, 204, 185, 0.18);
+}

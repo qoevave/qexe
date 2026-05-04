@@ -42,11 +42,20 @@ article {
   margin-right: auto;
 }
 
+.wide-table {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  
+  overflow-x: auto;
+  padding: 0 1rem;
+}
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
 :root {
-  --ifm-font-family-base: 'Poppins';
+  --ifm-font-family-base: 'Open Sans';
   --doc-sidebar-width: 250px;
   --ifm-font-size-base: 14px;
 }
@@ -101,6 +110,14 @@ article {
 
 .navbar__title{
   color: white;
+}
+
+/* The navbar background is dark in both light and dark mode (set above), so
+   force the nav-link colour to white so items remain legible — Infima's
+   default link colour is dark grey in light mode. */
+.navbar__link,
+.navbar__link:visited {
+  color: #ffffff;
 }
 
 :root {

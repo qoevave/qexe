@@ -3,188 +3,100 @@ sidebar_position: 1
 custom_edit_url: null 
 ---
 
-# Home
+# Introduction
 
-## Discover...
+The **Quality and Experience Evaluation (QExE) tool** is a framework for streamlining subjective experiments in virtual reality, with a focus on audiovisual quality and quality of experience (QoE) evaluation in interactive VR environments.
 
-[**What**](./intro#discover-what-id) the QExE tool is, [**why**](./intro#discover-why-id) it's here, and [**who**](./intro#discover-who-id) it's for...
+Built with **Unity** and **MaxMSP**, QExE automates experiment administration — handling test item generation, stimulus presentation, participant interaction, and data logging from a single configuration file. It supports a range of audiovisual stimuli including 360° video, CGI scenes, object-based audio, and Ambisonics.
 
-### What?{#discover-what-id}
 
-The quality of experiece of evaluation (QExE) tool is a framework for streamlining subjective experiments for virtual reality, focusing on **audiovisual quality** and **quality of experience** (QoE) methods in interactive virtual environments. 
+## What is QExE?
 
-Using MaxMSP and Unity, the QExE tool can be used to automate subjective experiments using several quality evaluation methods and questionnaires, employ a range of audio and visual stimuli possibilities including 360 video, CGI graphics, object-based audio, and Ambisonics, and track subjective exploration behavior and VR interactions for further analysis. 
+QExE integrates five quality evaluation methods and two validated questionnaires, supports multiple audio rendering pipelines (including 3-DoF and 6-DoF VSTs), and records participant pose and interaction data for behavioral analysis. For a complete overview of capabilities, see:
 
-For more information on what the QExE tool is and what it offers, take a look at the following recourses:
-- 📋 The [feature list](./features/features.mdx) for an overview, or specific information on quality evaluation [methods](./features/methods) or [questionnaires](./features/questionnaires). 
-- 📚 The [terminology and concepts](./terminology) page, for a description of important aspects within the tool.
-- 🏡 The [evaluations scene](./getting-started/eval-scenes) page, for an overview of what combinations of audiovisual content can be tested.
-- 🛠️ The [architecture](./qexe-architecture/overview) documentation to learn why the tool is built the way it is and how it works
+- The [feature tiers](./features/feature-tiers) for a structured summary of the tool's capabilities
+- The [evaluation methods](./features/methods) and [questionnaires](./features/questionnaires) pages for details on supported instruments
+- The [terminology and concepts](./terminology) page for definitions of key terms used throughout the documentation
+- The [evaluation scenes](./getting-started/eval-scenes) page for an overview of supported audiovisual content combinations
+- The [architecture documentation](./qexe-architecture/overview) for a description of how the tool is structured and why
 
-### Why?{#discover-why-id}
+## Why QExE?
 
-Virtual reality brings together multiple disciplines, including audio and visual rendering, human computer interaction, multi-modal perception, and cognitive sciences, for example. Designing and configuring virtual realty experiments for subjective evaluations under these domains can require considerable overhead. 
+Virtual reality brings together multiple disciplines — including audio and visual rendering, human-computer interaction, multimodal perception, and cognitive science. Designing and configuring subjective evaluations across these domains involves considerable setup overhead.
 
-The QExE tool aims to alleviate a considerable portion of the experiment setup by providing a framework to consolidate test automation, user interfaces, VR mechanics, and data collection, under one roof. The [config file](./getting-started/config-file) will take care of creating all the test items, importing your chosen method, questionnaire, recording tracking data, etc.
+QExE consolidates test automation, VR user interfaces, interaction mechanics, and data collection under a single framework. The [configuration file](./getting-started/config-file) handles test item generation, method and questionnaire integration, and behavioral data recording automatically.
 
-With the QExE tool you're also not fixed into a rigid test design. For users wanting to adapt the current implementation, you can always go under the hood to add new test modules and import your own test method, capture and track different behavioral data, or add in different questionnaires.
+The tool is also designed for extensibility. Researchers can introduce custom evaluation methods, questionnaires, or behavioral data streams without modifying the core architecture.
 
-### Who?{#discover-who-id}
+## Who is QExE for?
 
-The QExE tool is for researchers and developers conducing subjective experiments in VR. If you're famliar with perceptual quality experiments or sensory sciences, many of the discussed requirements will sound familiar. Experience and terminology with Unity will also be an advantage for researchers looking to adapt the QExE tool to their needs. 
+QExE is intended for researchers and developers conducting subjective experiments in VR. Familiarity with perceptual quality evaluation or sensory science is assumed; some experience with Unity is an advantage for those wishing to extend the tool.
 
-A good place to start is to check the following "I want to" list. If you see yourself in one of these, the QExE tool can help you out. 
+QExE is well-suited to studies that involve:
 
-Hi 👋🏼 I want to ... 
+- Evaluating audio, visual, or audiovisual quality across one or more VR scenes — including related constructs such as plausibility, immersion, or presence
+- Piloting experiments where the evaluation method has not yet been finalised
+- Administering questionnaires entirely within VR, without requiring participants to remove the headset
+- Collecting multimodal behavioral and interaction data for post-hoc analysis
+- Comparing multiple spatial audio rendering VSTs against a shared set of stimuli
+- Investigating higher-order cognitive constructs in VR, such as cognitive load
+- Comparing 360° video and CGI scene conditions within the same experiment
 
-- ✅ ... evaluate audio, visual, or audiovisual quality of one or more VR scene. Subsitute *quality*, for *plausibility*, *immersion*, or *presence* and you're still on the right track 👍🏽 
-- ✅ ... run some pre-tests but not sure about the method, and would like to try some different ones out. 
-- ✅ ... give subjects questionnaires either per item, or post-test, in VR without them having to take of the VR headset. 
-- ✅ ... collect multi-modal data of subjects interactions and behaviors for further analysis.
-- ✅ ... test different spatial audio rendering VSTs with the same real-time data. 
-- ✅ ... conduct research on high-order cognitive contructs in VR such as cognitive load. 
-- ✅ ... compare a 360 video scene vs. CGI scene. 
+## Downloading QExE
 
-For more information, see the QExE [feature tiers](./features/features.mdx) for more information. 
+:::tip
 
-## How Can I Download?
-
-:::tip 
-
-Visit the [QExE setup page](./downloading) for information on how to download. 
+Visit the [QExE setup page](./downloading) for download and installation instructions.
 
 :::
 
-## QExE Tool Development
+## Development
 
-### 🏗️ Continued Support
+### Continued Support
 
-The QExE tool release is a step towards building a larger framework for evaluating multimedia quality and quality of experience in virtual reality. The current implememtation is a consequence of requirements from previous audiovisual studies in virtual reality. For the future, we aim to build on current the feature set with further methods, questionnaires, interactive implementation, and core 'quality-of-life' functionality.
+The current QExE release reflects requirements gathered from prior audiovisual studies in virtual reality. Future development will extend the feature set with additional evaluation methods, questionnaires, interactive implementations, and further quality-of-life improvements.
 
-### 📨 Invitation to Contribute
+### Contributing
 
-The best way to to improve the tool is to have direct feedback from the community itself. If you wish to contribute, please feel free to get in touch.
-
+The most effective way to improve the tool is through direct feedback from the research community. Contributions are welcome — please get in touch if you are interested.
 
 ## Publication
 
+The QExE tool is described in the following publication. If you use QExE in your research, please cite accordingly.
 
-```
-@article{robotham2024,
-title = {title},
-author = {Authors},
-year = {year},
-pages={pages}
+```bibtex
+@article{robotham2026qexe,
+  title     = {{QExE}: A Quality and Experience Evaluation Tool for Audiovisual {VR} Perception, Behavior, and Cognition Research},
+  author    = {Robotham, Thomas M. and Rummukainen, Olli S. and Rebmann, Daniela and Raake, Alexander and Habets, Emanu\"{e}l A. P.},
+  journal   = {Frontiers in Virtual Reality},
+  volume    = {X},
+  pages     = {XXX},
+  year      = {2026},
+  publisher = {Frontiers},
+  doi       = {10.XXXX}
 }
 ```
 
-## SDKs / Packages
+## SDKs and Packages
 
-List of notable packages and SDKs used inside the Unity scenes. 
+Key Unity packages and SDKs used in QExE:
 
-- [**<u>HDRP</u>**](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@12.1/manual/index.html) v12.1.14 - Registry @ *com.unity.render-pipelines.high-definition*
+| Package | Version | Registry |
+| ------- | ------- | -------- |
+| [HDRP](https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@12.1/manual/index.html) | v12.1.14 | `com.unity.render-pipelines.high-definition` |
+| [Input System](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.7/manual/index.html) | v1.7.0 | `com.unity.inputsystem` |
+| [Oculus XR Plugin](https://docs.unity3d.com/Packages/com.unity.xr.oculus@3.3/manual/index.html) | v3.3.0 | `com.unity.xr.oculus` |
+| [OpenXR Plugin](https://docs.unity3d.com/Packages/com.unity.xr.openxr@1.9/manual/index.html) | v1.9.1 | `com.unity.xr.openxr` |
+| [XR Interaction Toolkit](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.5/manual/index.html) | v2.5.2 | `com.unity.xr.interaction.toolkit` |
+| [XR Plugin Management](https://docs.unity3d.com/Packages/com.unity.xr.management@4.4/manual/index.html) | v4.4.0 | `com.unity.xr.management` |
+| [extOSC](https://github.com/Iam1337/extOSC) | v1.2 | git @ `iam1337/extOSC` |
 
-- [**<u>Input System</u>**](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.7/manual/index.html) v1.7.0 - Registry @ *com.unity.inputsystem*
+## License
 
-- XR Plugins
-    - [**<u>Oculus</u>**](https://docs.unity3d.com/Packages/com.unity.xr.oculus@3.3/manual/index.html) v3.3.0 - Registry @ *com.unity.xr.oculus*
-    - [**<u>OpenXR</u>**](https://docs.unity3d.com/Packages/com.unity.xr.openxr@1.9/manual/index.html) v1.9.1 - Registry @ *com.unity.xr.openxr*
-    - [**<u>XR Interaction Toolkit</u>**](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.5/manual/index.html) v2.5.2 Registry @ *com.unity.xr.interaction.toolkit*
-    - [**<u>XR Plugin Management</u>**](https://docs.unity3d.com/Packages/com.unity.xr.management@4.4/manual/index.html) v4.4.0 Registry @ *com.unity.xr.management*
+QExE assets and code are released under separate open-source licenses. See the [License](./license) page for full terms and third-party notices.
 
-- [**<u>extOSC</u>**](https://github.com/Iam1337/extOSC) v1.2 - git @ *iam1337/extOSC*
-
-
-## License Information
-
-### QExE License
-
-:::info CC BY-NC-SA 4.0 License
-
-```qexe.assets``` 
-
-- Assets authored by the FAU for the QExE tool is Licensed under the [CC BY-NC-SA 4.0] License.
-
-:::
-
-:::info MIT License
-
-```qexe.code```
-
-- Code authored by the FAU for the QExE tool is Licensed under the [MIT] License. 
-
-:::
-
-### Third Party Notices
-
-List of Third Party Notices for the SDKs / Packages used in the QExE tool.
-
-:::note [Unity Companion License](https://unity.com/legal/licenses/unity-companion-license)
-
-Governing packages:
-
-- `URP` 
-- `Input System`
-- `XR Plugin Management`
-- `XR Interaction Toolkit` (+ Third Party Notice Apache 2.0 - Google Inc.)
-- `OpenXR Plugin` (+ Third Party Notice Apahce 2.0 - Facebook Technologies, LLC and its affiliates.)
-- `Oculus XR Plugin` (+ Third Party Notice Oculus SDK License Agreement.)
-
-> Unity Technologies ApS (“Unity”) grants to you a worldwide, non-exclusive, no-charge, and royalty-free copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, and distribute the work of authorship that accompanies this License (“Work”) subject to the following terms and conditions:
-
-<details>
-<summary>
-T&Cs 
-</summary>
-
-1. Unity Companion Use. Exercise of the license granted herein is permitted as long as it is in connection with the authoring and/or distribution of applications, software, or other content under a valid Unity content authoring and rendering engine software license (“Engine License”). That means, for example, as long as you authored content using the Work under an Engine License, you may distribute the Work in connection with that content as you see fit under this License. No other exercise of the license granted herein is permitted, and in no event may the Work be used for competitive analysis or to develop a competing product or service.
-
-2. No Modification of Engine License. Neither this License nor any exercise of the license granted herein modifies the Engine License in any way.
-
-3. Ownership; Derivative Works.
-
-    3.1. You own your content. In this License, “derivative works” means derivatives of the Work itself--works derived only from the Work by you under this License (for example, modifying the code of the Work itself to improve its efficacy); “derivative works” of the Work do not include, for example, games, apps, or content that you create with the Work. You keep all right, title, and interest in your own content.
-
-    3.2. Unity owns its content. While you keep all right, title, and interest to your own content per the above, as between Unity and you, Unity will own all right, title, and interest to all intellectual property rights (including patent, trademark, and copyright) in the Work and derivative works of the Work, and you hereby assign and agree to assign all such rights in those derivative works to Unity. Should assignment be invalid for any reason, you grant to Unity an irrevocable, perpetual, worldwide, non-exclusive, no-charge, and royalty-free license (with the right to grant sublicenses) under those intellectual property rights to those derivative works. You also agree to waive or refrain from asserting any author’s right, moral rights, or like rights to the extent necessary to permit exploitation as contemplated under this License.
-
-    3.3. Your right to use derivative works. You will always have the right to use derivative works of the Work you create, consonant with this License.
-
-4. Trademarks. You are not granted any right or license under this License to use any trademarks, service marks, trade names, products names, or branding of Unity or its affiliates (“Trademarks”). Descriptive uses of Trademarks are permitted; see, for example, Unity’s Trademark Guidelines athttps://unity.com/legal/branding_trademarks.
-
-5. Notices & Third-Party Rights. This License, including the copyright notice associated with the Work, must be provided in all substantial portions of the Work and derivative works thereof (or, if that is impracticable, in any other location where such notices are customarily placed). Further, if the Work is accompanied by a Unity “third-party notices” or similar file, you acknowledge and agree that software or content identified in that file is governed by those separate license terms.
-
-6. DISCLAIMER, LIMITATION OF LIABILITY. THE Work AND ANY DERIVATIVE WORKS THEREOF IS PROVIDED ON AN "AS IS" BASIS, AND IS PROVIDED WITHOUT WARRANTY OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND/OR NON-INFRINGEMENT. IN NO EVENT SHALL ANY COPYRIGHT HOLDER OR AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES (WHETHER DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL, INCLUDING PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES, LOSS OF USE, DATA, OR PROFITS, AND BUSINESS INTERRUPTION), OR OTHER LIABILITY WHATSOEVER, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM OR OUT OF, OR IN CONNECTION WITH, THE Work OR ANY DERIVATIVE WORKS THEREOF OR THE USE OF OR OTHER DEALINGS IN SAME, EVEN WHERE ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-7. USE IS ACCEPTANCE and License Versions. Your access to and use of the Work constitutes your acceptance of this License and its terms and conditions. This License may be modified or updated; upon any such modification or update, you will comply with the terms of the updated License for any use of any of the Work under the updated License.
-
-8. Use in Compliance with Law and Termination. Your exercise of the license granted herein will at all times be in compliance with applicable law and will not infringe any proprietary rights (including intellectual property rights); this License will terminate immediately (i) on any breach by you of this License; and (ii) if you commence any form of patent litigation, including a cross-claim or counterclaim, against anyone wherein you allege that the Work constitutes direct or secondary/indirect patent infringement.
-
-9. Severability. If any provision of this License is held to be unenforceable or invalid, that provision will be enforced to the maximum extent possible and the other provisions will remain in full force and effect.
-
-10. Governing Law and Venue. This License is governed by and construed in accordance with the laws of Denmark, except for its conflict of laws rules; the United Nations Convention on Contracts for the International Sale of Goods will not apply. If you reside (or your principal place of business is) within the United States, you and Unity agree to submit to the personal and exclusive jurisdiction of and venue in the state and federal courts located in San Francisco County, California concerning any dispute arising out of this License (“Dispute”). If you reside (or your principal place of business is) outside the United States, you and Unity agree to submit to the personal and exclusive jurisdiction of and venue in the courts located in Copenhagen, Denmark concerning any Dispute.
-
-</details>
-
-:::
-    
-:::note [Apache 2.0](https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.5/license/Third%20Party%20Notices.html)
-
-Pertaining to packages:
-
-- `XR Interaction Toolkit` regarding components:
-    - `Gesture code from AR Core Unity ObjectManipulation Example`. Copyright  © 2017 Google Inc. 
-
-- `OpenXR Plugin` regarding components:
-
-    - `OpenXR-SDK-Source`. Copyright © Facebook Technologies, LLC and its affiliates
-
-:::
-
-
-:::note [MIT License](https://github.com/Iam1337/extOSC/blob/master/LICENSE)
-
-Pertaining to packages:
-- `extOSC` Copyright © 2018-2021 Vladimir Sigalkin
-
-:::
+| Component | License |
+| --------- | ------- |
+| `qexe.assets` | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
+| `qexe.code` | [MIT](https://opensource.org/licenses/MIT) |
 

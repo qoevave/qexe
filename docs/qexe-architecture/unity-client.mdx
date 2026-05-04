@@ -4,47 +4,50 @@ custom_edit_url: null
 ---
 import CenteringImage from '../../src/components/centeringImage';
 import TextImage from '../../src/components/textImageLeft';
+import DocFigure from '../../src/components/DocFigure';
+import CaptionedImage from '../../src/components/CaptionedImage.jsx';
+
 import ShadowTestManager from '../../static/img/screenshots/TestManager_2.png'
+import TestRecorder from '../../static/img/screenshots/TestRecorder.png'
+import AVSynchronization from '../../static/img/screenshots/PlaybackSync.png'
+import ObjectTrigger from '../../static/img/screenshots/ObjectTrigger.png'
 
-# Unity Client
+# Unity Agent
 
-## (shadow) TestManager.cs
+## TestManager.cs (shadow manager)
 
-Inside the Unity `_config` scene the shadow `testmanager.cs` component can be found in the Unity hierarchy under the `TestManager` object.
+Inside the Unity `_config` scene, the `TestManager.cs` component can be found in the hierarchy under the `TestManager` object. This serves as a **shadow** manager object, used to keep synchronization with the MaxMSP controller. 
 
-The TestManager component will persis from the `_config` scene into all subsequent `_evaluation` and `_questionnaire` scenes, to ensure that the correct interfaces, and the next item can be correctly loaded, until returning to the `_config` scene.
+The `TestManager` component will persist from the `_config` scene into all subsequent `_evaluation` and `_questionnaire` scenes, ensuring that the correct interfaces and the next test item are loaded correctly, until control returns to the `_config` scene.
 
-### Inspector
-
-<TextImage
-    description={{
-        title: "",
-        content: (
-        <p>
-        The shadow testmanager.cs in the QExE agent Unity project receives information from the QExE Controller throughout the test. On the right hand side we have a number of field entries: <br/><br/>
-        <b>OSCManager</b> is the object that has both transmitter and receiver for the OSC connection over UDP. <br/> 
-        <b>btn/Next</b> and <b>btn/StartPlayback</b> are mandatory buttons that need to be found on an imported method interface.<br/><br/>
-        <b>Current Item</b> shows information related to the current evaluation item.<br/>
-        <b>Next Item</b> shows the same information related to the next item. <br/><br/>
-        The <b>Questionnaire</b> field shows the name of the questionnaire received from the QExE controller, and how it should be integrated. Below is a user defined array where Unity interfaces can be added. If Unity detects an interface matching the name of the received questionnaire, this will be used.  <br/><br/>
-        The <b>Methodology</b> field shows the name of the test method received from the QExE controller. Additionally, the number of parallel audio conditions is also sent which is needed to set interface number of buttons and sliders. Below is a user defined array where Unity interfaces can be added. If Unity detects an interface matching the name of the received methodology, this will be used.  
+<DocFigure
+  imagePath={ShadowTestManager}
+  imageAlt="UI of the TestManager.cs component in Unity"
+  label="Unity Inspector View"
+  title="TestManager.cs"
+  imagePosition="right"
+>
+  <p>
+        The <code>TestManager.cs</code> component in the QExE Unity Agent receives configuration information from the QExE Controller at the start of each test. The inspector fields are as follows: <br/><br/>
+        <b>OSCManager</b> is the object responsible for both transmitting and receiving OSC messages over UDP. <br/> 
+        <b>btn/Next</b> and <b>btn/StartPlayback</b> are mandatory buttons that must be present on any imported method interface.<br/><br/>
+        <b>Current Item</b> displays information related to the current evaluation item.<br/>
+        <b>Next Item</b> displays the same fields for the upcoming item. <br/><br/>
+        The <b>Questionnaire</b> field shows the questionnaire name and integration mode received from the Controller. The array below allows Unity interfaces to be registered; if a matching interface name is found, it will be instantiated automatically. <br/><br/>
+        The <b>Methodology</b> field shows the test method name received from the Controller, along with the number of parallel audio conditions — used to configure the number of buttons and sliders on the interface. The array below allows method interfaces to be registered in the same way.
         </p> 
-        ),
-    }}
-    imagePath={ShadowTestManager}
-    />
+</DocFigure>
 
-    ### SetMethodologyInterface(args)
 
-    #### Description
+    ### SetMethodologyInterface()
 
-    - Gets called on every onSceneLoad(), with the name of the received test method as an argument. 
-    - The method name is than compared against the list of methods seen in the inspector. If a match is found, the method prefab is instantiated in the scene as a child of a specific object that the user can turn on and off. 
-    - Once instantiated, references to the btn/Next and btn/StartPlayback buttons are found such that we can control OSC messages. 
+    - Called on every `onSceneLoad()`, with the name of the received test method as an argument.
+    - The method name is compared against the list of interfaces registered in the inspector. If a match is found, the method prefab is instantiated as a child of a designated interface container object.
+    - Once instantiated, references to `btn/Next` and `btn/StartPlayback` are resolved so that OSC messages can be controlled correctly.
 
-    #### Customization options
+    **Customization options**
 
-    - If you wish to add your own method, then add a new empty field entry into the testmanager.cs inspector, and drag and drop your method prefab into the new field. Be sure to have adapted the QExE controller setTestMethod() function to recognize your questionnaire name, in addition to creating a corresponding `.maxpat` to load into the method container module, and code to calculate a the number of test items. 
+    - To add a custom method interface, add a new empty field in the `TestManager.cs` inspector and drag the method prefab into it. Ensure that the QExE Controller's `setTestMethod()` function is updated to recognise the new method name, and that a corresponding `.maxpat` file and paradigm calculation function are provided. 
 
     <details>
     <summary>
@@ -79,17 +82,15 @@ The TestManager component will persis from the `_config` scene into all subseque
     ```
     </details>
 
-    ### SetQuestionnaireInterface(args)
+    ### SetQuestionnaireInterface()
 
-    #### Description 
+    - Called on every `onSceneLoad()` when the current scene is _questionnaire, with the questionnaire name as an argument.
+    - The questionnaire name is compared against the list of interfaces registered in the inspector. If a match is found, the questionnaire prefab is instantiated as a child of a designated container object.
+    - Once instantiated, a reference to btn/Next is resolved so that OSC messages can be controlled correctly. 
 
-    - Gets called on every onSceneLoad() if the current scene is equal to `_questionnaire`, with the name of the received questionnaire as an argument. 
-    - The questionnaire name is than compared against the list of methods seen in the inspector. If a match is found, the questionnaire prefab is instantiated in the scene as a child of a specific object. 
-    - Once instantiated, references to the btn/Next button is found such that we can control OSC messages. 
+    **Customization options**
 
-    #### Customization options
-
-    - If you wish to add your own questionnaire, then add a new empty field entry into the testmanager.cs inspector, and drag and drop your questionnaire prefab into the new field. Be sure to have adapted the QExE controller setQuestionnaire() function to recognize your questionnaire name, in addition to creating a corresponding `.maxpat` to load into the questionnaire container module.  
+    - To add a custom questionnaire interface, add a new empty field in the TestManager.cs inspector and drag the questionnaire prefab into it. Ensure that the QExE Controller's `setQuestionnaire()` function is updated to recognize the new questionnaire name, and that a corresponding `.maxpat` file is provided..  
 
     <details>
     <summary>
@@ -121,51 +122,40 @@ The TestManager component will persis from the `_config` scene into all subseque
 
 ## TestRecorder.cs
 
-The `TestRecorder.cs` component can be found in the Hierarchy of a scene under the `TestManager` game object. As with the `TestManager.cs`, the script will persist throughout all scenes to stream all relevant data into a behavior.txt file.
+The `TestRecorder.cs` component can be found in the hierarchy under the `TestManager` game object. Like `TestManager.cs`, this script persists across all scenes, streaming all relevant data to a `behavior.txt` file.
 
-### Inspector 
-
-<CenteringImage 
-    imageUrl={'../../img/screenshots/TestRecorder.png'}
-    alt={"test recorder Unity"}
-    width={"60%"}
+<CaptionedImage
+  alt="Inspector view of the TestRecorder.cs component"
+  source={TestRecorder}
+  header="TestRecorder.cs Component"
+  description="Inspector view of the TestRecorder.cs component. The component receives the results directory of the subject, and creates a new streamwriter to save all OSC information. "
+  padding="5% 10% 5% 10%"
 />
-
-#### Description
-
-- Receives the results directory of the subject, and creates a new streamwriter to save all OSC information. 
 
 ## QExEPlaybackSync.cs
 
 The `PlaybackSync.cs` component can be found in the Hierarchy of a scene under `QExE XR Set Up > QExEAnimationAudioSync`. 
 
-### Inspector 
-
-<CenteringImage 
-    imageUrl={'../../img/screenshots/PlaybackSync.png'}
-    alt={"playback sync Unity"}
-    width={"60%"}
+<CaptionedImage
+  alt="Inspector view of the PlaybackSync.cs component"
+  source={AVSynchronization}
+  header="QExEPlaybackSync.cs Component"
+  description="Inspector view of the QExEPlaybackSync.cs component. Can be used used to add any number of Unity game objects. The game objects will be deactivated until the user presses play, such that any animations that need to happen in sync with separate audio playback can be triggered simultaneously."
+  padding="5% 10% 5% 10%"
 />
 
-#### Description
-
-- Can be used used to add any number of Unity game objects. The game objects will be deactivated until the user presses play, such that any animations that need to happen in sync with separate audio playback can be triggered simultaneously.
 
 ## QExEAudioObject.cs
 
 The `QExEAudioObject.cs` component can be attached to any game object inside a scene, that the user would like to track as an audio object. 
 
-### Inspector 
-
-<CenteringImage 
-    imageUrl={'../../img/screenshots/ObjectTrigger.png'}
-    alt={"audio object trigger Unity"}
-    width={"60%"}
+<CaptionedImage
+  alt="Inspector view of the QExEAudioObject.cs component"
+  source={ObjectTrigger}
+  header="QExEAudioObject.cs Component"
+  description="Inspector view of the QExEAudioObject.cs component. Can be used used to identify any object as a QExE audio object that should be tracked with position and rotation updates when moved. The class features public methods which can then be used to send event-based triggers to the QExE Controller."
+  padding="5% 10% 5% 10%"
 />
-
-#### Description
-
-- Can be used used to identify any object as a QExE audio object that should be tracked with position and rotation updates when moved. The class features public methods which can then be used to send event-based triggers to the QExE Controller.
 
 <details>
 <summary>

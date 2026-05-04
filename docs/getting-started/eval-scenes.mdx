@@ -1,41 +1,48 @@
 ---
-sidebar_position: 4
+sidebar_position: 2
 custom_edit_url: null 
-description: Creating your evaluation scenes...
+description: Configuration examples for each supported combination of audio and visual scene content.
 ---
+
 
 # Evaluation Scenes
 
-## Making an Evaluation Scene
+Scenes are defined in the `Scenes` array of the [configuration file](./config-file#scenes). Each entry specifies the visual content type, the Unity scene to load, the audio rendering pipeline, and the associated audio files.
 
-Scenes are defined in the [configuration file](./config-file.md) using a set of identifiers, parameters, and audio and visual material. 
+QExE supports four scene configurations, corresponding to the combination of audio pipeline and visual content type:
 
-### Object-based Audio + CGI
+|  | **CGI** | **360° Video** |
+|---|---|---|
+| **Object-based audio** | [Object-based + CGI](#object-based-audio--cgi) | [Object-based + 360° Video](#object-based-audio--360-video) |
+| **Ambisonics audio** | [Ambisonics + CGI](#ambisonics-audio--cgi) | [Ambisonics + 360° Video](#ambisonics-audio--360-video) |
 
-Here's an example scene configuration for a CGI scene. The evaluation scene uses individual audio files which are associated with audio objects in virtual reality, and are rendered using an object-based audio workflow.
+
+## Object-based Audio + CGI
+
+Individual mono audio files are associated with spatial audio objects in a CGI Unity scene, rendered through the object-based pipeline.
 
 ```JSON
 "Scenes" : [
     {
-        "stimuli_ID" : "Scene_stereo_bongos_interaction",
-        "unityScene_ID" : "_bongos_demo",
+        "stimuli_ID"        : "Scene_stereo_bongos_interaction",
+        "unityScene_ID"     : "_bongos_demo",
         "visualStimuliType" : "CGI",
-        "dimensions" : [ 30.0, 8.0, 30.0 ],
+        "dimensions"        : [ 30.0, 8.0, 30.0 ],
         "multichannelAudio" : {
             "multichannelAudioFile" : null
         },
         "objectAudio" : {
-            "objectAudioFolder" : "audio/_bongos/edited",
+            "objectAudioFolder"  : "audio/_bongos/edited",
             "objectAudioRouting" : [
                 {
-                    "pathToFile" : "1_bongos_L.wav",
+                    "pathToFile"   : "1_bongos_L.wav",
                     "inputChannel" : 0,
-                    "autoplay" : 1
+                    "autoplay"     : 1
                 },
                 {
-                    "pathToFile" : "2_bongos_R.wav",
+                    "pathToFile"   : "2_bongos_R.wav",
                     "inputChannel" : 1,
-                    "autoplay" : 1
+                    "autoplay"     : 1
                 }
             ]
         }
@@ -43,22 +50,22 @@ Here's an example scene configuration for a CGI scene. The evaluation scene uses
 ]
 ```
 
-Let's break it down...
+Key entries:
 
-- `scene_ID` → A string to define the test item (e.g., "Scene_stereo_bongos_interaction", to help us identify certain aspects of the item quickly)
-- `unityScene_ID` → A string entry used to inform the Unity client which Unity scene should be loaded
-- `VisualStimuli` → Either `CGI` or `ODV` entry to determine which further config entries are of interest
-- `dimensions` → X, Z, Y dimensions of the virtual scene, used for paramater input normalizion for VSTs
-- `multichannelAudioFile` → path to the multichannel audio file(s)
-- `objectAudioFolder` → path to the folder containing the mono audio files used for audio objects
-- `objectAudioRouting` → An array entry of nested data regarding specific audio files. For each audio file, we provide 
-    - `pathToFile` →  name/path of the audio file relative to the audio `objectAudioFolder`
-    - `inputChannel` → input channel to the VST
-    - `autoplay` → `1` or `0` to say if the file should continuously loop from start or be triggered by event
+- `stimuli_ID` — a label to identify this scene in the results output
+- `unityScene_ID` — the name of the .unity scene file to load in the Unity Agent
+- `visualStimuliType` — set to "CGI" for Unity-authored scenes
+- `dimensions` — the [X, Y, Z] extent of the virtual scene in metres, used for parameter normalisation when mapping object positions to VST inputs
+- `multichannelAudioFile` — set to null when using the object-based pipeline
+- `objectAudioFolder` — path to the folder containing mono object audio files, relative to pathToAudioVideoScenesContent
+- `objectAudioRouting` — array of audio object entries, each specifying:
+- `pathToFile` — filename or relative path of the mono audio file
+- `inputChannel` — VST input channel index for this object
+- `autoplay` — 1 to loop continuously from scene start; 0 to trigger via event
 
-### Object-based + 360 Video
+## Object-based Audio + 360° Video
 
-An example using a 360 which has been augments by audio objects with the object rendering pipeline.
+A 360° video scene augmented with spatially rendered audio objects. The _videoPlayer Unity scene is used for all 360° video content.
 
 ```JSON
 "audioRendering" : {
@@ -71,28 +78,28 @@ An example using a 360 which has been augments by audio objects with the object 
 ```JSON
 "Scenes" : [
     {
-        "scene_ID" : "Scene_sax_video_audio_object",
+        "stimuli_ID"        : "Scene_sax_video_audio_object",
         //highlight-start
-        "unityScene_ID" : "_videoPlayer", // <- Specific scene for video playabck.
+        "unityScene_ID"     : "_videoPlayer",
         "visualStimuliType" : "ODV",
-        "videoFiles" : [ // <- List allows multiple video files per scene.
+        "videoFiles" : [
             {
                 "pathToFile" : "saxophone/video/saxophonePlayer.mp4", 
-                "video_ID" : 1
+                "video_ID"   : 1
             }
         ],
         //highlight-end
-        "dimensions" : [ 5, 5, 5 ], 
+        "dimensions"        : [ 5, 5, 5 ], 
         "multichannelAudio" : {
             "multichannelAudioFile" : null
         },
         "objectAudio" : {
-            "objectAudioFolder" : "saxophone/objects",
+            "objectAudioFolder"  : "saxophone/objects",
             "objectAudioRouting" : [
                 {
-                    "pathToFile" : "saxophone.wav",
+                    "pathToFile"   : "saxophone.wav",
                     "inputChannel" : 0,
-                    "autoplay" : 1
+                    "autoplay"     : 1
                 }
             ]
         }
@@ -100,18 +107,24 @@ An example using a 360 which has been augments by audio objects with the object 
 ]
 ```
 
-A scene that is recorded via a 360 camera doesn't change in terms of the content that is recorded. However, it CAN change in terms of encoding, resolution, or frame-rate, for example. Therefore, multiple recordings can be classified as the same scene. 
+- `unityScene_ID` — always "_videoPlayer" for 360° video scenes
+- `visualStimuliType` — set to "ODV" (omnidirectional video) for 360° content
+- `videoFiles` — a list of video files associated with this scene. Assigning multiple video files to a single scene is an efficient way to generate ACR test items for video quality evaluation, where all other parameters remain constant across items
 
-Allowing multiple video files to be assigned to a single scene is an efficient way of creating test items for [ACR](../features/methods.mdx) video quality evaluation, where all other parameters would remain the same.
+:::note
 
-### Ambisonics audio + 360 Video
+A scene that is recorded via a 360 camera doesn't change in terms of the content that is recorded. However, it CAN change in terms of encoding, resolution, or frame-rate, for example. Therefore, multiple recordings can be defined in the `Scene` entry, by providing more `videoFiles` and subsequent `pathToFile` and `index` entries. 
 
-An example using the multichannel rendering pipline with Ambisoncis audio and 360 video...
+:::
+
+## Ambisonics Audio + 360 Video
+
+A 360° video scene with a multichannel Ambisonics audio file. Object-based audio entries are left empty.
 
 ```JSON
 "audioRendering" : {
     ...
-    "renderingPipeline" : "Multichannel", // <- Set rendering pipeline for Multichannel audio.
+    "renderingPipeline" : "Multichannel",
     ...
 },
 ```
@@ -119,39 +132,42 @@ An example using the multichannel rendering pipline with Ambisoncis audio and 36
 ```JSON
 "Scenes" : [
     {
-        "scene_ID" : "Scene_sax_video_audio_object",
-        "unityScene_ID" : "_videoPlayer", // <- Specific scene for video playabck.
+        "stimuli_ID"        : "Scene_sax_video_ambisonics",
+        "unityScene_ID"     : "_videoPlayer",
         "visualStimuliType" : "ODV",
-        "videoFiles" : [ // <- List allows multiple video files per scene.
+        "videoFiles" : [
             {
                 "pathToFile" : "saxophone/video/saxophonePlayer.mp4", 
-                "video_ID" : 1
+                "video_ID"   : 1
             }
         ],
-        "dimensions" : [ 5, 5, 5 ], // <- This is ignored in multichannel audio rendering
+        "dimensions"        : [ 5, 5, 5 ],
         //highlight-start
         "multichannelAudio" : {
             "multichannelAudioFile" : "saxophone/ambisonics/4OA_Saxophone.wav"
         },
         //highlight-end
         "objectAudio" : {
-            "objectAudioFolder" : "null",
-            "objectAudioRouting" : [ ]
+            "objectAudioFolder"  : "null",
+            "objectAudioRouting" : []
         }
     }
 ]
 ```
 
-Here, we've removed information regarding audio objects and object routing, and have inlcuded a path to the Ambisonics audio file.
+- `renderingPipeline` — set to "Multichannel" in the audioRendering block
+- `multichannelAudioFile` — path to the Ambisonics audio file, relative to pathToAudioVideoScenesContent
+- `objectAudio` entries are left empty when using the multichannel pipeline; dimensions is also ignored in this mode
 
-### Ambisoncs audio + CGI
 
-An example using a CGI scene and Ambisonics audio
+## Ambisonics Audio + CGI
+
+A CGI Unity scene with a multichannel Ambisonics audio file.
 
 ```JSON
 "audioRendering" : {
     ...
-    "renderingPipeline" : "Multichannel", // <- Set rendering pipeline for Multichannel audio.
+    "renderingPipeline" : "Multichannel",
     ...
 },
 ```
@@ -159,16 +175,16 @@ An example using a CGI scene and Ambisonics audio
 ```JSON
 "Scenes" : [
     {
-        "scene_ID" : "Scene_city_1OA_audio",
-        "unityScene_ID" : "_city",
-        "visualStimuli" : "CGI",
-        "dimensions" : [ 50.0, 8.0, 50.0 ],
+        "stimuli_ID"        : "Scene_city_1OA_audio",
+        "unityScene_ID"     : "_city",
+        "visualStimuliType" : "CGI",
+        "dimensions"        : [ 50.0, 8.0, 50.0 ],
         "multichannelAudio" : {
             "multichannelAudioFile" : "city/ambisonics/4OA_City.wav"
         },
         "objectAudio" : {
-            "objectAudioFolder" : "null",
-            "objectAudioRouting" : [ ]
+            "objectAudioFolder"  : "null",
+            "objectAudioRouting" : []
         }
     }
 ]

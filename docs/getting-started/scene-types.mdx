@@ -1,0 +1,62 @@
+---
+sidebar_position: 1
+custom_edit_url: null 
+---
+
+import DocFigure from '../../src/components/DocFigure';
+import CaptionedImage from '../../src/components/CaptionedImage.jsx';
+
+import ConfigScene from '../../static/img/configScene.png'
+
+# Scene Types
+
+The QExE tool uses three distinct types of Unity scene, each serving a specific role in the test flow:
+
+- The [`_config`](#_config-scene) scene — the mandatory starting scene for every test
+- The [`_questionnaire`](#_questionnaire-scene) scene — the virtual space for in-headset questionnaire responses
+- [`_evaluation` scenes](#evaluation-scenes) — the scenes in which stimuli are presented and evaluated
+
+## _config Scene{#_config-scene}
+
+The `_config` scene is always the first scene loaded at the start of a test. It serves two purposes:
+
+1. It provides participants with a virtual space to acclimatize to the headset, controls, and movement before the test begins — avoiding the situation where subjects are placed directly into an evaluation without preparation.
+2. It performs initialization steps and communicates with the QExE Controller to retrieve test configuration data prior to the first evaluation item.
+
+The `TestManager.cs` component is attached to the `TestManager` object in the `_config` scene hierarchy. As described in the [Unity Agent architecture](../qexe-architecture/unity-client), this component acts as the Unity-side counterpart to the Controller's `testmanager.js`, persisting across all scenes for the duration of the test. 
+
+<CaptionedImage
+  alt="Unity screenshot of the _config scene"
+  source={ConfigScene}
+  header="_config Scene"
+  description="Unity screenshot of the _config scene."
+  padding="5% 10% 5% 10%"
+/>
+
+## _questionnaire Scene{#_questionnaire-scene}
+
+The `_questionnaire` scene provides a dedicated virtual space for participants to complete a specified [questionnaire](../features/questionnaires) using a VR interface. Its visual style is intentionally simple, consistent with the `_config` scene, though both can be adapted to suit the aesthetic requirements of a study.
+
+## _evaluation Scenes{#evaluation-scenes}
+
+Evaluation scenes fall into two categories depending on the visual content type:
+
+1. **CGI evaluation scenes** — scenes designed in Unity and saved as `.unity` files
+2. **360° video evaluation scenes** — scenes that stream video content via the built-in `_videoPlayer` scene
+
+For a full breakdown of how to configure evaluation scenes, including audio and visual combinations, see the [Evaluation Scenes](./eval-scenes) page.
+
+### 1. CGI Evaluation Scenes
+
+CGI scenes are authored directly in Unity. A completed scene is saved as `my-scene-name.unity`. To use it in a test, set `"unityScene_ID" : "my-scene-name"` in the `Scenes` array of your [configuration file](./config-file).
+
+### 2. 360° Video Scenes
+
+For 360° video content, set `"unityScene_ID" : "_videoPlayer"` in the config file. The `_videoPlayer` scene includes a video manager that receives the video file URL from the QExE Controller at runtime — no custom Unity scene authoring is required.  
+
+:::tip Mixing scene types
+
+Because scene loading is controlled by the QExE Controller, CGI and 360° video scenes can be mixed within a single test. This enables direct comparisons between scene types within the same experiment.
+
+:::
+

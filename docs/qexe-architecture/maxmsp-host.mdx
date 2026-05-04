@@ -4,13 +4,21 @@ custom_edit_url: null
 ---
 
 import CenteringImage from '../../src/components/centeringImage';
+import DocFigure from '../../src/components/DocFigure';
+import CaptionedImage from '../../src/components/CaptionedImage.jsx';
 
+import MethodContainer from '../../static/img/screenshots/method_container.png';
+import MethodContainerPresentation from '../../static/img/screenshots/MaxMSP_3.png';
+import ModuleOSCManager from '../../static/img/screenshots/module_OSCManager.png'
 
 # Max/MSP Controller
 
-## testmanager.js 
+The documentation here covers the main functions in two javascript objects:
 
-#### Location
+- `testmanager.js` - The main controller script, responsible for loading and controlling the flow of a test.
+- `module_osc_handler.js` - The communication module, responsible for handling the sending and receiving messages, to and and from the Unity Agent. 
+
+## testmanager.js 
 
 ```
 my-qexe-project
@@ -22,12 +30,11 @@ my-qexe-project
          └── ...
 ```
 
-The `testmanager.js` script is the main code within the controller. From here, we can break down the highlighted functions. 
+The `testmanager.js` script is the main controller script. The key functions are described below.
 
 ### loadTest()
 
-
-**_objtxt** : The JSON configuration file is saved into this dictionary which is accessed throughout the testmanager.js file.
+- `filePath` - File path to the .json configuration file to load. The json is loaded as a javascript dictionary object, which is then saved as a string in **_objtxt**. This can be accessed throughout `testmanager.js`.
 
 ```js {20,29-30,34,37,51,54} title="/src/code/testmanager.js" showLineNumbers
 function loadTest(filePath)
@@ -90,16 +97,14 @@ function loadTest(filePath)
 }
 ```
 
-### setQuestionnaire(args)
+### setQuestionnaire()
 
-#### Description 
+- `questionnaireType` - String sent to the questionnaire container to load the corresponding .maxpat file. Also send to the results module to write to results files.
+- `questionnaireIntegration` - String sent to the results module to ensure test metadata is stored in the results files.
 
-- Takes the `questionnaireType` and searches for the the correct entry. A string is then sent to the questionnaire containter to load a certain `.maxpat` file. 
-- Both the `questionnaireType` and `questionnaireIntegration`entires are sent to the results module to ensure test information is also stored in the results files.
+**Customization options**
 
-#### Customization options
-
-- If you would like to include your own questionnaire `.maxpat` file, add another case entry here that replaces the bpatcherQuestionnaire with the name of your `.maxpat` file. Make sure your `.maxpat` file has requirements to communicate with the rest of the code. 
+- To include a custom questionnaire .maxpat file, add a new case entry that replaces `bpatcherQuestionnaire` with the name of your `.maxpat` file. Ensure your `.maxpat` satisfies the communication requirements expected by the rest of the controller.
 
 <details>
 <summary>
@@ -132,16 +137,13 @@ function setQuestionnaire(questionnaireType, integrationType) {
 </details>
 
 
-### setTestMethod(args)
+### setTestMethod()
 
-#### Description 
+- `methodType` The ID used to load the correct method logic and interfaces. A string is sent to the method container to load a certain `.maxpat` file. For certain methods, the number of audio renderers is also sent to the method container to initialize the test via the `setTest()` function. 
 
-- Takes the `methodType` and searches for the the correct entry. A string is then sent to the method containter to load a certain `.maxpat` file. For certain methods, the number of audio renderers is also sent to the method container to initialize the test via the `setTest()` function. 
+**Customization options**
 
-#### Customization options
-
-- To include your method `.maxpat`,  add another case entry here that replaces the bpatcherQuestionnaire with the name of your `.maxpat` file. However, additional code must be added in order for the test items to be constructed. See calculateParadigm() below. 
-
+- To include your method `.maxpat`,  add another case entry here that replaces the `bpatcherQuestionnaire` with the name of your `.maxpat` file. Note that additional code is required for test item construction — see `calculateParadigm()` below.
 
 <details>
 <summary>
@@ -185,51 +187,17 @@ function setTestMethod(method) {
 ```
 </details>
 
-### module_MethodQuestionnaireContainer.maxpat
-
-The max patch below shows how messages sent into the `thispatcher` object can load new max patches in real time. 
-Both the method container (left) and the questionnaire container (right) start of with a default empty max patch. From the functions above (`setQuestionnaire()` and `setTestMethod()`) the correct max patches will be loaded into each of these modules respectively. 
-
-```
-my-qexe-project
-└─ qexe_controller
-   └─ src
-      └─ patchers
-         ├── ...
-         ├── module_MethodQuestionnaireContainer.maxpat
-         └── ...
-```
-
-#### Patch-mode
-
-<CenteringImage 
-    imageUrl={'../../img/screenshots/method_container.png'}
-    alt={"method container"}
-    width={"50%"}
-/>
-
-#### Presentation-mode (with ACR method and SSQ questionnaire)
-
-
-
-<CenteringImage 
-    imageUrl={'../../img/screenshots/MaxMSP_3.png'}
-    alt={"method container"}
-    width={"80%"}
-/>
-
 
 ### calculateParadigm()
 
 #### Description
 
-- Takes the `methodType` and searches for the the correct entry.
-- Methods from code imports are then used to calculate a set of items.
-- The calculated set of test items is then saved into a dict called `objtmptxt` which is used throughout the test to access the correct variables. 
+- `methodType` is used to search for the the correct entry. The method loaded is then used to calculate a set of items.
+- The calculated set of test items is then saved into a dict called `objtmptxt`. This is used throughout the test to access the correct variables. 
 
-#### Customization options
+**Customization options**
 
-- To include your own test method, you must also include a function to caluclate the correct number of test items. As an example, the method `ACRParadgm` is contained within the `_method_ACR_calc` object. This is imported at the top of the `testmanager.js` file. 
+- To include a custom test method, a corresponding paradigm calculation function must also be provided. As an example, the `ACRParadigm` function is contained within the `_method_ACR_calc` module, imported at the top of `testmanager.js`.
 
 <details>
 <summary>
@@ -299,14 +267,12 @@ function calculateParadigm() {
 
 ### setOSCManager()
 
-#### Description
-
 - Sends the OSC information to the OSC manager regarding the ip address and port numbers. 
-- Sends the test information to the OSC manager such that the variables can be quickly sent to the conntection unity agent upon request. 
+- Sends the test information to the OSC manager such that the variables can be quickly sent to the connection unity agent upon request. 
 
-#### Customization options
+**Customization options**
 
-- If you wish to send more variables to the qexe unity agent, you can add them here and augment the `set_paradigm_info()` function in the `module_osc_handler.js` script. 
+- To send additional variables to the Unity Agent, add them here and extend the `set_paradigm_info()` function in `module_osc_handler.js`. Make sure to accommodate these new incoming messages in the Unity Agent.
 
 <details>
 <summary>
@@ -324,19 +290,17 @@ function SetOSCManager() {
                                     _objtxt.testSettings.methodType,                // set method.
                                     numberOfAudioRenderingVSTs,                     // set number of VSTs loaded.
                                     _objtxt.testSettings.questionnaireType,         // set type of questionnaire.
-                                    _objtxt.testSettings.questionnaireIntegration); // set the intrgation mode of the questionnaire.                   
+                                    _objtxt.testSettings.questionnaireIntegration); // set the integration mode of the questionnaire.                   
 }
 ```
 </details>
 
 
-### SetaudioConditions(args)
+### SetaudioConditions()
 
-#### Description
-
-- Takes the `audioRendering` key and values entires from the JSON configuration file and loads the relevant VSTs. 
+- `audioRendering` - multiple key and values entires from the JSON configuration file used to load the relevant VSTs. 
 - Initially creates the interface buttons needed to be able to open the VSTs GUIs. 
-- To load the actual audio rendering VSTs, a loop will itterate through the number of VSTs, and provide the path for a VST maxMSP object to be loaded, and plugged. Information in this loop is then collected and finally sent to the results writer so that all results files have the required test data. 
+- To load the actual audio rendering VSTs, a loop will iterate through the number of VSTs, and provide the path for a VST maxMSP object to be loaded, and plugged. Information in this loop is then collected and finally sent to the results writer so that all results files have the required test data. 
 
 <details>
 <summary>
@@ -389,8 +353,6 @@ function SetaudioConditions(AudioRendering) {
 
 ## module_osc_handler.js 
 
-#### Location
-
 ```
 my-qexe-project
 └─ qexe_controller
@@ -402,8 +364,6 @@ my-qexe-project
 ```
 
 ### SetLocalVars(...args)
-
-#### Description
 
 - Function called from the `testmanager.js` `setOSCManager()` method to set local variables. 
 
@@ -436,13 +396,11 @@ max.addHandler('SetLocalVars', (...args) => {
 
 ### TestManager(...args)
 
-#### Description
+- Handles all incoming OSC calls from Unity — either retrieving information from `testmanager.js` or responding directly with locally stored variables. The first argument in `max.outlet()` is either `"testmanager"` (routes to `testmanager.js`) or `"toclient"` (routes to the outgoing OSC port). 
 
-- Handles all incoming calls from the unity to to either get information from the `testmanager.js`, or respond directly with local variables. The first argument in the `max.output()` method contains either the string `"testmanager"` or `"toclient"` which routes all subsequent data to the `testmanager.js` or outgoing OSC port.  
+**Customization options**
 
-#### Customization options
-
-- You can add more cases here to handle new incoming OSC messages from Unity. The format of the incoming call should be `"TestManager, msg, ... "` 
+- Additional cases can be added here to handle new incoming OSC messages from Unity. Incoming calls should follow the format `"TestManager, msg, ..."`. 
 
 <details>
 <summary>
@@ -488,13 +446,11 @@ function handle_TestManager(...args){
 
 ### SendToUnity(...args)
 
-#### Description
+- Handles all outgoing calls to the Unity Agent. The first argument in max.outlet() is `"toclient"`, routing data to the outgoing OSC port.  
 
-- Handles all incoming calls to send information to Unity. The first argument in the `max.output()` method contains the string `"toclient"` which routes all subsequent data to the outgoing OSC port.  
+**Customization options**
 
-#### Customization options
-
-- If you would like to send more information to Unity, you can add another case `msg` here. The format of the incoming call should be `"SendToUnity, msg, ... "`.
+- To send additional information to Unity, add a new case here. Incoming calls should follow the format `"SendToUnity, msg, ..."`.
 
 <details>
 <summary>
@@ -538,6 +494,38 @@ function handle_TestManager(...args){
 ```
 </details>
 
+## Max Patches
+
+### module_MethodQuestionnaireContainer.maxpat
+
+```
+my-qexe-project
+└─ qexe_controller
+   └─ src
+      └─ patchers
+         ├── ...
+         ├── module_MethodQuestionnaireContainer.maxpat
+         └── ...
+```
+
+The patch below shows how messages sent into the `thispatcher` object can load new Max patches at runtime. Both the method container (left) and the questionnaire container (right) start with a default empty patch. The `setQuestionnaire()` and `setTestMethod()` functions above load the correct patches into each container respectively.
+
+<CaptionedImage
+  alt="Patcher view of method and questionnaire container"
+  source={MethodContainer}
+  header="module_MethodQuestionnaireContainer.maxpat (Patcher view)"
+  description="Patcher view of the method and questionnaire container. Incoming messages from the testManager.js are routed to predefined messages that are used to dynamically load sub-patches. Incoming OSC messages can be sent directly to the sub-patches and are handled on a per-method / per-questionnaire basis."
+  padding="5% 20% 5% 20%"
+/>
+
+<CaptionedImage
+  alt="Presentation view of method and questionnaire container"
+  source={MethodContainerPresentation}
+  header="module_MethodQuestionnaireContainer.maxpat (Presentation view)"
+  description="Presentation view of the method and questionnaire container (shown above). The example shows the .maxpat modules for ARC method and SSQ questionnaire loaded. Note - the interfaces here are for visual feedback, reflecting what happens in the Unity Agent."
+  padding="5% 10% 5% 10%"
+/>
+
 ### module_OSCManager.maxpat 
 
 The max patch below shows where the `module_osc_handler.js` code is used. 
@@ -556,8 +544,10 @@ my-qexe-project
          └── ...
 ```
 
-<CenteringImage 
-    imageUrl={'../../img/screenshots/module_OSCManager.png'}
-    alt={"method container"}
-    width={"90%"}
+<CaptionedImage
+  alt="Patcher view of the OSC module"
+  source={ModuleOSCManager}
+  header="module_OSCManager.maxpat (Patcher view)"
+  description="Patcher view of the OSC module. The route object filters three different types of incoming OSC message that need to be mapped to any loaded VST input channel index. Control OSC messages are sent directly into the OSC module. Messages from the testManager.js object are sent into the module (purple)."
+  padding="5% 10% 5% 10%"
 />

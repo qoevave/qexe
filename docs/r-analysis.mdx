@@ -5,45 +5,142 @@ custom_edit_url: null
 
 # Analysis
 
-## 'R'eady to go... 
+## Provided R Script Examples
 
-To analyze the data ouput of the QExE tool, we've provided a few R scritps to get you going. 
+To analyze the data output of the QExE tool, we've provided some R code for some data exploration.
 
-```R
-# read the raw tracking per subject file .txt and save into a dataframe. 
-read_behavior_file <- function(df_main_behavior, resultsPath, subjectFolder) {
-  
-  #pathToFolders <- "../RESULTS/Training_Yes/"
-  #folders <- list.files(path = pathToFolders)
-  #subjectFolder <- folders[1]
-  
-  subjectFilesInFolder <- list.files(path = paste(pathToFolders, subjectFolder, sep=""))
-  
-  # Set behavior file path name.
-  behaviourFilePath <- paste(pathToFolders, subjectFolder, "/", subjectFilesInFolder[1], sep = "")
-  
-  # Remove .txt suffix from SubjectID to use as a subject entry in long format data frame. 
-  # subjectID <- gsub(".txt","",behaviourFilePath)
-  
-  print(paste("Start reading behavior.txt ...", behaviourFilePath))
-  
-  df_this_subject_behavior = read.table(behaviourFilePath, header = FALSE, sep = " ", dec = ".", fill = TRUE, col.names = paste('V',seq_len(23)))
-  df_this_subject_behavior <- dplyr::select(df_this_subject_behavior, V.1, V.3, V.5, V.7, V.8, V.9, V.10, V.11, V.12, V.13, V.14, V.15, V.16, V.17,V.18,V.19,V.20,V.21)
-  
-  df_this_subject_behavior$SubjID <- c(gsub(".txt","",subjectFilesInFolder[9]))
-  
-  # find the unique items to analyse the behavior.
-  unique_items_list <- unique(df_this_subject_behavior$V.3)
-  print(unique_items_list)
+### Loading a Results File
 
-  # for (i in 1:length(unique_items_list))
-  #   if (unique_items_list[i] != "null"){
-  #     subject_tracking_item_trimmed_df <- trim_tracking_file(subject_tracking_item_trimmed_df, df_main_behavior, unique_items_list[i])
-  #   }
-  
-  df_main_behavior <- rbind(df_main_behavior, df_this_subject_behavior)
-  return(df_main_behavior)
-}
+```r
+library(jsonlite)
+library(tidyverse)
+
+results_js <- fromJSON("subj_id_unknown_1809/results_id_unknown_1809.json", flatten = TRUE) # Load the JSON results file
+df <- as.data.frame(results_js$ResultsFile$TestResults) # Select the JSON nest with the results
+
+df_long <- df %>%
+  pivot_longer(
+    cols = starts_with("Rating.Con_"),  # Select columns that start with 'Rating.Con_'
+    names_to = "Condition",             # Name of the new key column
+    values_to = "Rating"                # Name of the new value column
+  )
+
+df_long <- df_long %>%
+  mutate(Condition = str_replace(Condition, "Rating.Con_", "")) # Remove flattened JSON names
+
+df_long <- df_long %>% # Revalue the column vectors to factors or numeric
+  mutate(
+    SceneID = as.factor(SceneID),
+    UnitySceneID = as.factor(UnitySceneID),
+    VideoFile = as.factor(VideoFile),
+    VideoID = as.factor(VideoID),
+    Condition = as.factor(Condition),
+    Rating = as.numeric(Rating)
+  )
+
+df_long$SubjectID <- 1 # Add a subject ID
 ```
 
+### Loading a Questionnaire file
 
+```r
+library(jsonlite)
+library(tidyverse)
+
+questionnaire_js <- fromJSON("subj_id_unknown_1809/questionnaire_id_unknown_1809.json", flatten = TRUE)
+questionnaire_df <- as.data.frame(questionnaire_js$QuestionnaireFile$QuestionnaireResults)
+
+df_long <- questionnaire_df %>%
+  pivot_longer(
+    cols = starts_with("Rating."), 
+    names_to = "NASATLX",             
+    values_to = "Rating"            
+  )
+
+df_long <- df_long %>%
+  mutate(NASATLX = str_replace(NASATLX, "Rating.", ""))
+
+df_long <- df_long %>%
+  mutate(
+    SceneID = as.factor(SceneID),
+    UnitySceneID = as.factor(UnitySceneID),
+    VideoFile = as.factor(VideoFile),
+    VideoID = as.factor(VideoID),
+    NASATLX = as.factor(NASATLX),
+    Rating = as.numeric(Rating)
+  )
+
+df_long$SubjectID <- 1
+```
+
+### Load a Behavior Tracking File
+
+The behavior file contains a lot of data that you can parse into different dataframes for analysis. Here's an example loading the .txt file and parsing the user and object transform data into separate df's. 
+
+```r
+library(dplyr)
+library()
+
+df_this_subject_behavior = read.table("subj_id_unknown_1809/behaviour_id_unknown_1809.txt", header = FALSE, sep = " ", dec = ".", fill = TRUE)
+df_this_subject_behavior <- dplyr::select(df_this_subject_behavior, V1, V2, V4, V5, V9, V12, V15, V18, V21, V24)
+  
+# df_this_subject_behavior$SubjID <- c(gsub(".txt","",subjectFilesInFolder[9]))
+
+# Extract user-transform messages into new df
+df_behavior_userPose <- dplyr::filter(df_this_subject_behavior, 
+                                      V5 == "<OSCMessage:/stream/userpose/rot>" 
+                                      | V5 == "<OSCMessage:/stream/userpose/pos>")
+
+# Extract object-transform messages into new df
+df_behavior_objects <- dplyr::filter(df_this_subject_behavior, 
+                                     V5 == "<OSCMessage:/stream/objectspose/pos/>" 
+                                     | V5 == "<OSCMessage:/stream/objectspose/rot/>" )
+
+# Rename the column vectors. 
+colnames(df_behavior_userPose) <- c("Scene", "TimeElapsed", "Video", "OSCMessage", "X", "Y", "Z")
+colnames(df_behavior_objects) <- c("Scene", "TimeElapsed", "Video", "OSCMessage", "ObjectIndex", "X", "Y", "Z")
+
+# User behavior
+# Remove characters from numeric variable entries 
+df_behavior_userPose$X <- gsub(",", ".", as.character(df_behavior_userPose$X))
+df_behavior_userPose$X = substring(df_behavior_userPose$X,1, nchar(df_behavior_userPose$X)-1)
+df_behavior_userPose$Y <- gsub(",", ".", as.character(df_behavior_userPose$Y))
+df_behavior_userPose$Y = substring(df_behavior_userPose$Y,1, nchar(df_behavior_userPose$Y)-1)
+df_behavior_userPose$Z <- gsub(",", ".", as.character(df_behavior_userPose$Z))
+df_behavior_userPose$Z <- gsub(")", "", as.character(df_behavior_userPose$Z))
+df_behavior_userPose$TimeElapsed <- gsub(",", ".", as.character(df_behavior_userPose$TimeElapsed))
+
+# Convert vectors to factors and numeric values
+df_behavior_userPose$Scene <- as.factor(df_behavior_userPose$Scene)
+df_behavior_userPose$TimeElapsed <- as.numeric(df_behavior_userPose$TimeElapsed)
+df_behavior_userPose$X <- as.numeric(df_behavior_userPose$X)
+df_behavior_userPose$Y <- as.numeric(df_behavior_userPose$Y)
+df_behavior_userPose$Z <- as.numeric(df_behavior_userPose$Z)
+
+# Remove obsolete columns
+df_behavior_userPose <- df_behavior_userPose[,c(1,2,3,4,5,6,7)]
+
+# Objects
+# Remove characters from numeric variable entries 
+df_behavior_objects$X <- gsub(",", ".", as.character(df_behavior_objects$X))
+df_behavior_objects$X = substring(df_behavior_objects$X,1, nchar(df_behavior_objects$X)-1)
+df_behavior_objects$Y <- gsub(",", ".", as.character(df_behavior_objects$Y))
+df_behavior_objects$Y = substring(df_behavior_objects$Y,1, nchar(df_behavior_objects$Y)-1)
+df_behavior_objects$Z <- gsub(",", ".", as.character(df_behavior_objects$Z))
+df_behavior_objects$Z = substring(df_behavior_objects$Z,1, nchar(df_behavior_objects$Z)-1)
+df_behavior_objects$TimeElapsed <- gsub(",", ".", as.character(df_behavior_objects$TimeElapsed))
+df_behavior_objects$ObjectIndex <- gsub(",", "", as.character(df_behavior_objects$ObjectIndex))
+
+df_behavior_objects$Scene <- as.factor(df_behavior_objects$Scene)
+df_behavior_objects$TimeElapsed <- as.numeric(df_behavior_objects$TimeElapsed)
+df_behavior_objects$ObjectIndex <- as.numeric(df_behavior_objects$ObjectIndex)
+df_behavior_objects$X <- as.numeric(df_behavior_objects$X)
+df_behavior_objects$Y <- as.numeric(df_behavior_objects$Y)
+df_behavior_objects$Z <- as.numeric(df_behavior_objects$Z)
+
+# Remove obsolete columns
+df_behavior_objects <- df_behavior_objects[,c(1,2,3,4,5,6,7,8)]
+
+df_behavior_userPose$SubjectID <- 1
+df_behavior_objects$SubjectID <- 1
+```
